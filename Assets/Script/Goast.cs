@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Goast : MonoBehaviour
 {
     float speed = 3.5f;
-    Animator EyeEnim;
     public enum GoastType{
         Blinky,
         Inky,
@@ -32,9 +32,10 @@ public class Goast : MonoBehaviour
 
     public bool IsPlay=false;
 
+    public GameObject[] EyeObjects;
+
     public void Start()
     {
-        EyeEnim = this.GetComponentInChildren<Animator>();
 
         Node node = GetNodeAtPosition(transform.position);
         if(node != null)
@@ -43,8 +44,7 @@ public class Goast : MonoBehaviour
             PreviousNode = CurrentNode;
         }
 
-        Debug.Log(goastType);
-        EyeEnim.SetInteger("Eyecode", 1);
+       
         CheckingGoastType();
     }
 
@@ -56,7 +56,7 @@ public class Goast : MonoBehaviour
                 StartCoroutine(GoastMovement(0f, Vector3.left));
                 break;
             case GoastType.Inky:
-                StartCoroutine(GoastMovement(3f,Vector3.right));
+                StartCoroutine(GoastMovement(3f, Vector3.right));
                 break;
            case GoastType.Pinky:
                 StartCoroutine(GoastMovement(6f, Vector3.up));
@@ -72,15 +72,12 @@ public class Goast : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(DelayTime);
         Direction = dir;
-        IsPlay = true;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(IsPlay)
-        {
             GetcurrentNode();
 
             ChangePosition();
@@ -90,27 +87,38 @@ public class Goast : MonoBehaviour
             SetOrientation();
 
             transform.position += Direction * speed * Time.deltaTime;
-        }
     }
 
     public void SetOrientation()
     {
-        Debug.Log(EyeEnim.GetInteger("Eyecode"));
+        int index = 0;
         if(Direction == Vector3.left)
         {
-            EyeEnim.SetInteger("Eyecode", 1);
+            index = 0;
         }
         if(Direction == Vector3.right)
         {
-            EyeEnim.SetInteger("Eyecode", 2);
+            index = 1;
         }
         if(Direction == Vector3.up)
         {
-            EyeEnim.SetInteger("Eyecode", 3);
+            index = 2;
         }
         if(Direction == Vector3.down)
         {
-            EyeEnim.SetInteger("Eyecode", 4);
+            index = 3;
+        }
+
+        for(int i = 0;i < EyeObjects.Length;i++)
+        {
+            if(index == i)
+            {
+                EyeObjects[i].SetActive(true);
+            }
+            else
+            {
+                EyeObjects[i].SetActive(false);
+            }
         }
     }
 
