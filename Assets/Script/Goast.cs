@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -6,6 +7,30 @@ using UnityEngine;
 public class Goast : MonoBehaviour
 {
     float speed = 3.5f;
+    float Distance = 100000f;
+    int ScatterObjId;
+    int Scatter1 = 7;
+    int Scatter2 = 7;
+    int Scatter3 = 5;
+    int Scatter4 = 5;
+
+    int Chase1 = 20;
+    int Chase2 = 20;
+    int Chase3 = 20;
+    int Chase4 = 20;
+
+    public List<Node> scatterPoints;
+
+
+    public enum GoastMode
+    {
+        Chase,
+        Scatter,
+        Frighted
+    }
+
+    public GoastMode goastMode;
+
     public enum GoastType{
         Blinky,
         Inky,
@@ -25,7 +50,6 @@ public class Goast : MonoBehaviour
 
     public Vector3 NextDirection =Vector3.zero;
 
-    float Distance = 100000f;
     public Vector3 PacDirection;
     public Node[] nodes;
     public Vector2[] Directions;
@@ -33,7 +57,8 @@ public class Goast : MonoBehaviour
     public bool IsPlay=false;
 
     public GameObject[] EyeObjects;
-
+    
+    
     public void Start()
     {
 
@@ -82,11 +107,13 @@ public class Goast : MonoBehaviour
 
             ChangePosition();
 
+            ChangeMode();
+
             Setdirection();
 
             SetOrientation();
 
-            transform.position += Direction * speed * Time.deltaTime;
+        transform.position += Direction * speed * UnityEngine.Time.deltaTime;
     }
 
     public void SetOrientation()
@@ -153,7 +180,14 @@ public class Goast : MonoBehaviour
 
             PreviousNode = CurrentNode;
 
-            MoveToNode = CanMove();
+            if(goastMode == GoastMode.Scatter)
+            {
+                MoveToNode = null;
+            }
+            else
+            {
+                MoveToNode = CanMove(PacMan);
+            }
 
             Direction = NextDirection ;
         }
@@ -164,30 +198,79 @@ public class Goast : MonoBehaviour
     {
         if(MoveToNode == null )
         {
-            MoveToNode = CanMove();
+
+            if(goastMode == GoastMode.Scatter)
+            {
+                //CanMove(scatterPoints[ScatterObjId].gameObject);
+
+                if(scatterPoints.Exists(asd => asd == CurrentNode))
+                {
+                    int nodeid = scatterPoints.FindIndex(asd => asd == CurrentNode);
+                    Node Scatternode = scatterPoints[nodeid];
+
+                    int NextPoint = nodeid + 1;
+                    if(NextPoint == scatterPoints.Count)
+                    {
+                        NextPoint = 0;
+                    }
+
+                    int Movenodeid = scatterPoints.FindIndex(asd => asd == scatterPoints[NextPoint]);
+                    Node MoveScatternode = scatterPoints[Movenodeid];
+
+                    MoveToNode = MoveScatternode;
+
+                    int dirid = Array.IndexOf(Scatternode.neighbors, MoveScatternode);
+                    NextDirection = Scatternode.ValidDirections[dirid];
+                    Direction = NextDirection;
+                }
+
+            }
+            else
+            {
+                MoveToNode = CanMove(PacMan);
+            }
 
             PreviousNode = CurrentNode;
         }
     }
 
+    void ChangeMode()
+    {
+        if(goastType == GoastType.Blinky)
+        {
+            
+            if(goastMode == GoastMode.Scatter)
+            {
+                
+            }
+            else if(goastMode == GoastMode.Chase)
+            {
+               
+            }
+            else
+            {
 
-    Node CanMove()
+            }
+        }
+    }
+
+    Node CanMove(GameObject obj)
     {
         if(CurrentNode != null)
         {
             nodes = CurrentNode.neighbors;
             Directions = CurrentNode.ValidDirections;
-            /*Distance = 10000f;
+           /* Distance = 10000f;
             for(int i = 0;i < nodes.Length;i++)
             {
-                if(Vector3.Distance(nodes[i].transform.position, PacMan.transform.position) < Distance)
+                if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
                 {
-                    Distance = Vector3.Distance(nodes[i].transform.position, PacMan.transform.position);
+                    Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
                     MoveToNode = nodes[i];
                     NextDirection = Directions[i];
                 }
             }*/
-            int num = Random.Range(0, nodes.Length);
+            int num = UnityEngine.Random.Range(0, nodes.Length);
             MoveToNode = nodes[num];
             NextDirection = Directions[num];
 

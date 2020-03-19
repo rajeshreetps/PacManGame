@@ -841,7 +841,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &27047371
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -906,7 +906,7 @@ Transform:
   - {fileID: 1761773610}
   - {fileID: 1195375770}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &27047373
 Animator:
@@ -939,6 +939,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2082908ffd7a9c548be3525cc1ea11b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scatterPoints:
+  - {fileID: 1644935624}
+  - {fileID: 1970821713}
+  - {fileID: 1279390012}
+  - {fileID: 648701815}
+  - {fileID: 1651659990}
+  - {fileID: 856636059}
+  goastMode: 1
   goastType: 2
   PacMan: {fileID: 2114147634}
   gameBoard: {fileID: 1684371243}
@@ -15812,6 +15820,7 @@ GameObject:
   m_Component:
   - component: {fileID: 481466328}
   - component: {fileID: 481466330}
+  - component: {fileID: 481466329}
   m_Layer: 0
   m_Name: boundry
   m_TagString: Obstacles
@@ -15833,6 +15842,32 @@ Transform:
   m_Father: {fileID: 65197957}
   m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &481466329
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481466327}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!212 &481466330
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23768,6 +23803,7 @@ GameObject:
   m_Component:
   - component: {fileID: 682416194}
   - component: {fileID: 682416196}
+  - component: {fileID: 682416195}
   m_Layer: 0
   m_Name: boundry
   m_TagString: Obstacles
@@ -23789,6 +23825,32 @@ Transform:
   m_Father: {fileID: 65197957}
   m_RootOrder: 32
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &682416195
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682416193}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!212 &682416196
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -31642,6 +31704,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2082908ffd7a9c548be3525cc1ea11b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scatterPoints:
+  - {fileID: 1355862938}
+  - {fileID: 75470364}
+  - {fileID: 1341393779}
+  - {fileID: 451106895}
+  - {fileID: 485472316}
+  - {fileID: 458211996}
+  goastMode: 1
   goastType: 0
   PacMan: {fileID: 2114147634}
   gameBoard: {fileID: 1684371243}
@@ -35558,6 +35628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1079775732}
   - component: {fileID: 1079775734}
+  - component: {fileID: 1079775733}
   m_Layer: 0
   m_Name: boundry
   m_TagString: Obstacles
@@ -35579,6 +35650,32 @@ Transform:
   m_Father: {fileID: 65197957}
   m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1079775733
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079775731}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!212 &1079775734
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -56459,7 +56556,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1732715015
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -56557,6 +56654,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2082908ffd7a9c548be3525cc1ea11b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scatterPoints:
+  - {fileID: 630209041}
+  - {fileID: 308278753}
+  - {fileID: 52596701}
+  - {fileID: 1421308449}
+  - {fileID: 1133077976}
+  - {fileID: 116173856}
+  goastMode: 1
   goastType: 3
   PacMan: {fileID: 2114147634}
   gameBoard: {fileID: 1684371243}
@@ -57743,7 +57848,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1761620501
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -57808,7 +57913,7 @@ Transform:
   - {fileID: 1165136611}
   - {fileID: 1284287018}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1761620503
 Animator:
@@ -57841,6 +57946,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2082908ffd7a9c548be3525cc1ea11b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scatterPoints:
+  - {fileID: 1593303003}
+  - {fileID: 17683435}
+  - {fileID: 1596960174}
+  - {fileID: 1357160220}
+  - {fileID: 1203871895}
+  - {fileID: 1518495121}
+  goastMode: 1
   goastType: 1
   PacMan: {fileID: 2114147634}
   gameBoard: {fileID: 1684371243}
@@ -62624,6 +62737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1923361053}
   - component: {fileID: 1923361055}
+  - component: {fileID: 1923361054}
   m_Layer: 0
   m_Name: boundry
   m_TagString: Obstacles
@@ -62645,6 +62759,32 @@ Transform:
   m_Father: {fileID: 65197957}
   m_RootOrder: 31
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1923361054
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923361052}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!212 &1923361055
 SpriteRenderer:
   m_ObjectHideFlags: 0
