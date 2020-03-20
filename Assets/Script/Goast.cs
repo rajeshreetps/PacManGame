@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Goast : MonoBehaviour
 {
+
     float speed = 3.5f;
     float Distance = 100000f;
     int ScatterObjId;
-    int Scatter1 = 7;
-    int Scatter2 = 7;
-    int Scatter3 = 5;
-    int Scatter4 = 5;
+    public float Scatter1 = 7;
+    float Scatter2 = 7;
+    float Scatter3 = 5;
+    float Scatter4 = 5;
 
-    int Chase1 = 20;
-    int Chase2 = 20;
-    int Chase3 = 20;
-    int Chase4 = 20;
+    public float Chase1 = 20;
+    float Chase2 = 20;
+    float Chase3 = 20;
+    float Chase4 = 20;
 
     public List<Node> scatterPoints;
 
@@ -31,10 +31,11 @@ public class Goast : MonoBehaviour
 
     public GoastMode goastMode;
 
-    public enum GoastType{
+    public enum GoastType
+    {
         Blinky,
-        Inky,
         Pinky,
+        Inky,
         Clyde
     }
     //[HideInInspector]
@@ -45,20 +46,21 @@ public class Goast : MonoBehaviour
     //[HideInInspector]
     public GameBoard gameBoard;
 
-    public Node CurrentNode, PreviousNode,MoveToNode;
+    public Node CurrentNode, PreviousNode, MoveToNode;
     public Vector3 Direction = Vector3.zero;
 
-    public Vector3 NextDirection =Vector3.zero;
+    public Vector3 NextDirection = Vector3.zero;
 
     public Vector3 PacDirection;
     public Node[] nodes;
     public Vector2[] Directions;
 
-    public bool IsPlay=false;
+    public bool IsPlay = false;
 
     public GameObject[] EyeObjects;
-    
-    
+
+
+
     public void Start()
     {
 
@@ -69,7 +71,7 @@ public class Goast : MonoBehaviour
             PreviousNode = CurrentNode;
         }
 
-       
+
         CheckingGoastType();
     }
 
@@ -80,13 +82,13 @@ public class Goast : MonoBehaviour
             case GoastType.Blinky:
                 StartCoroutine(GoastMovement(0f, Vector3.left));
                 break;
+            case GoastType.Pinky:
+                StartCoroutine(GoastMovement(6f, Vector3.up));
+                break;
             case GoastType.Inky:
                 StartCoroutine(GoastMovement(3f, Vector3.right));
                 break;
-           case GoastType.Pinky:
-                StartCoroutine(GoastMovement(6f, Vector3.up));
-                break;
-           case GoastType.Clyde:
+            case GoastType.Clyde:
                 StartCoroutine(GoastMovement(9f, Vector3.left));
                 break;
         }
@@ -103,17 +105,21 @@ public class Goast : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            GetcurrentNode();
 
-            ChangePosition();
+        GetcurrentNode();
 
-            ChangeMode();
+        ChangePosition();
 
-            Setdirection();
+        Setdirection();
 
-            SetOrientation();
+        SetOrientation();
 
         transform.position += Direction * speed * UnityEngine.Time.deltaTime;
+
+        ChangeMode();
+
+
+
     }
 
     public void SetOrientation()
@@ -161,13 +167,15 @@ public class Goast : MonoBehaviour
 
     Node GetNodeAtPosition(Vector2 pos)
     {
-        GameObject tile = gameBoard.Board[(int)Mathf.Round(pos.x), (int)Mathf.Round(pos.y)];
+        GameObject tile = null;
 
-        if(tile != null)
+        if(gameBoard.Board[(int)pos.x, (int)pos.y] != null)
         {
+            tile = gameBoard.Board[(int)pos.x, (int)pos.y];
             return tile.GetComponent<Node>();
         }
-        return null;
+            
+        return CurrentNode;
     }
 
     void Setdirection()
@@ -189,19 +197,18 @@ public class Goast : MonoBehaviour
                 MoveToNode = CanMove(PacMan);
             }
 
-            Direction = NextDirection ;
+            Direction = NextDirection;
         }
-        
+
     }
 
     void ChangePosition()
     {
-        if(MoveToNode == null )
+        if(MoveToNode == null)
         {
-
             if(goastMode == GoastMode.Scatter)
             {
-                //CanMove(scatterPoints[ScatterObjId].gameObject);
+                CanMove(scatterPoints[ScatterObjId].gameObject);
 
                 if(scatterPoints.Exists(asd => asd == CurrentNode))
                 {
@@ -221,105 +228,202 @@ public class Goast : MonoBehaviour
 
                     int dirid = Array.IndexOf(Scatternode.neighbors, MoveScatternode);
                     NextDirection = Scatternode.ValidDirections[dirid];
-                    Direction = NextDirection;
+                }
+                else
+                {
+                    nodes = CurrentNode.neighbors;
+                    Directions = CurrentNode.ValidDirections;
+
+                    Distance = 10000f;
+                    for(int i = 0;i < nodes.Length;i++)
+                    {
+                        if(Vector3.Distance(nodes[i].transform.position, scatterPoints[ScatterObjId].gameObject.transform.position) < Distance)
+                        {
+                            Distance = Vector3.Distance(nodes[i].transform.position, scatterPoints[ScatterObjId].gameObject.transform.position);
+                            MoveToNode = nodes[i];
+                            NextDirection = Directions[i];
+                        }
+
+                    }
+
                 }
 
+                Direction = NextDirection;
             }
             else
             {
+               
                 MoveToNode = CanMove(PacMan);
             }
 
-            PreviousNode = CurrentNode;
-        }
-    }
-
-    void ChangeMode()
-    {
-        if(goastType == GoastType.Blinky)
-        {
-            
-            if(goastMode == GoastMode.Scatter)
-            {
-                
-            }
-            else if(goastMode == GoastMode.Chase)
-            {
-               
-            }
-            else
-            {
-
+                PreviousNode = CurrentNode;
             }
         }
-    }
 
-    Node CanMove(GameObject obj)
-    {
-        if(CurrentNode != null)
+        void ChangeMode()
         {
-            nodes = CurrentNode.neighbors;
-            Directions = CurrentNode.ValidDirections;
-           /* Distance = 10000f;
-            for(int i = 0;i < nodes.Length;i++)
+            if(goastType == GoastType.Blinky)
             {
-                if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
+
+                if(goastMode == GoastMode.Scatter)
                 {
-                    Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
-                    MoveToNode = nodes[i];
-                    NextDirection = Directions[i];
+                Scatter1 -= Time.deltaTime;
+                if(Scatter1 < 0)
+                    {
+                        Debug.Log("Blinky Chase mode start");
+                        Scatter1 = 7;
+                        goastMode = GoastMode.Chase;
+                    }
                 }
-            }*/
-            int num = UnityEngine.Random.Range(0, nodes.Length);
-            MoveToNode = nodes[num];
-            NextDirection = Directions[num];
+                else if(goastMode == GoastMode.Chase)
+                {
+                Chase1 -= Time.deltaTime;
+                if(Chase1 < 0)
+                    {
+                        Debug.Log("Blinky Scatter mode start");
+                        Chase1 = 20;
+                        goastMode = GoastMode.Scatter;
+                    }
+                }
+            }
+            if(goastType == GoastType.Pinky)
+            {
+                if(goastMode == GoastMode.Scatter)
+                {
+                    Scatter2 -= Time.deltaTime;
+                    if(Scatter2 < 0)
+                    {
+                        Debug.Log("Pinky Chase mode start");
+                        Scatter2 = 7;
+                        goastMode = GoastMode.Chase;
+                    }
+                }
+                else if(goastMode == GoastMode.Chase)
+                {
+                    Chase2 -= Time.deltaTime;
+                    if(Chase2 < 0)
+                    {
+                        Debug.Log("Pinky Scatter mode start");
+                        Chase2 = 20;
+                        goastMode = GoastMode.Scatter;
+                    }
+                }
+            }
 
+            if(goastType == GoastType.Inky)
+            {
+                if(goastMode == GoastMode.Scatter)
+                {
+                    Scatter3 -= Time.deltaTime;
+                    if(Scatter3 < 0)
+                    {
+                        Debug.Log("Inky Chase mode start");
+                        Scatter3 = 7;
+                        goastMode = GoastMode.Chase;
+                    }
+                }
+                else if(goastMode == GoastMode.Chase)
+                {
+                    Chase3 -= Time.deltaTime;
+                    if(Chase3 < 0)
+                    {
+                        Debug.Log("Inky Scatter mode start");
+                        Chase3 = 20;
+                        goastMode = GoastMode.Scatter;
+                    }
+                }
+            }
+            if(goastType == GoastType.Clyde)
+            {
+                if(goastMode == GoastMode.Scatter)
+                {
+                    Scatter4 -= Time.deltaTime;
+                    if(Scatter4 < 0)
+                    {
+                        Debug.Log("Clyde Chase mode start");
+                        Scatter4 = 7;
+                        goastMode = GoastMode.Chase;
+                    }
+                }
+                else if(goastMode == GoastMode.Chase)
+                {
+                    Chase4 -= Time.deltaTime;
+                    if(Chase4 < 0)
+                    {
+                        Debug.Log("Clyde Scatter mode start");
+                        Chase4 = 20;
+                        goastMode = GoastMode.Scatter;
+                    }
+                }
+            }
         }
-        return MoveToNode;
-    }
+
+        Node CanMove(GameObject obj)
+        {
+            if(CurrentNode != null)
+            {
+                nodes = CurrentNode.neighbors;
+                Directions = CurrentNode.ValidDirections;
+                /* Distance = 10000f;
+                 for(int i = 0;i < nodes.Length;i++)
+                 {
+                     if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
+                     {
+                         Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
+                         MoveToNode = nodes[i];
+                         NextDirection = Directions[i];
+                     }
+                 }*/
+                int num = UnityEngine.Random.Range(0, nodes.Length);
+                MoveToNode = nodes[num];
+                NextDirection = Directions[num];
+
+            }
+            return MoveToNode;
+        }
 
 
-    bool OverShotTarget()
-    {
+        bool OverShotTarget()
+        {
             float NodeToTarget = LenghfromNode(MoveToNode.transform.position);
             float NodeToSelf = LenghfromNode(this.transform.position);
             return NodeToSelf > NodeToTarget;
 
+        }
+
+        float LenghfromNode(Vector2 TargetPos)
+        {
+            Vector2 vec = TargetPos - (Vector2)PreviousNode.transform.position;
+            return vec.sqrMagnitude;
+        }
+
+
+        /*Vector3 GetdirectionOfPacMan(Vector3 position)
+        {
+            Vector3 pos = Vector3.zero;
+            Vector3 Direction = this.transform.position - position;
+            if(Direction.x > 0)
+            {
+                pos = Vector3.right;
+            }
+
+            if(Direction.x < 0)
+            {
+                pos = Vector3.left;
+            }
+
+            if(Direction.z > 0)
+            {
+                pos = Vector3.up;
+            }
+
+            if(Direction.z < 0)
+            {
+                pos = Vector3.down;
+            }
+
+            return pos;
+        }*/
     }
-
-    float LenghfromNode(Vector2 TargetPos)
-    {
-        Vector2 vec = TargetPos - (Vector2)PreviousNode.transform.position;
-        return vec.sqrMagnitude;
-    }
-
-
-    /*Vector3 GetdirectionOfPacMan(Vector3 position)
-    {
-        Vector3 pos = Vector3.zero;
-        Vector3 Direction = this.transform.position - position;
-        if(Direction.x > 0)
-        {
-            pos = Vector3.right;
-        }
-
-        if(Direction.x < 0)
-        {
-            pos = Vector3.left;
-        }
-
-        if(Direction.z > 0)
-        {
-            pos = Vector3.up;
-        }
-
-        if(Direction.z < 0)
-        {
-            pos = Vector3.down;
-        }
-
-        return pos;
-    }*/
-}
 
 

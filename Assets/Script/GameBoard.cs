@@ -11,6 +11,7 @@ public class GameBoard : MonoBehaviour
     public static int BoardWidth =22;
     
     public GameObject[,] Board = new GameObject[BoardWidth, BoardHeight];
+    public List<GameObject> points;
 
 
     // Start is called before the first frame update
@@ -24,8 +25,9 @@ public class GameBoard : MonoBehaviour
         foreach(var obj in objects)
         {
             Vector2 pos = obj.transform.localPosition;
-            if(obj.name != "Player")
+            if(obj.tag == "Pettel")
             {
+                points.Add(obj);
                 Board[(int)pos.x, (int)pos.y] = obj;
             }
             else
