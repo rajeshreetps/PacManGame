@@ -29,6 +29,7 @@ public class Playercontoller : MonoBehaviour
 
     public Node CurrentNode,PreviousNode,TargetNode;
 
+    public GameObject[] Ghosts;
     // Start is called before the first frame update
     void Start()
     {
@@ -210,20 +211,6 @@ public class Playercontoller : MonoBehaviour
     }
 
 
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-       
-        if(other.tag == "Food")
-        {
-            other.gameObject.SetActive(false);
-            Gamecontroller.Instance.score+=10;
-        }
-        
-    }
-
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
        if(collision.gameObject.tag == "Pettel")
@@ -235,18 +222,12 @@ public class Playercontoller : MonoBehaviour
         {
             collision.gameObject.SetActive(false);
             Gamecontroller.Instance.score += 100;
+            for(int i = 0;i < Ghosts.Length;i++)
+            {
+                Ghost ghost = Ghosts[i].GetComponent<Ghost>();
+                ghost.goastMode = Ghost.GoastMode.Frighted;
+            }
         }
     }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-      if(collision.gameObject.tag == "Obstacle")
-        {
-            //IsHit = true;
-        }
-    }
-
-    
-
 }
  

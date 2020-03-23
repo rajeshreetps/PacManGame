@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Goast : MonoBehaviour
+public class Ghost : MonoBehaviour 
 {
+
     float speed = 3.5f;
     float Distance = 100000f;
     int ScatterObjId;
@@ -29,6 +30,7 @@ public class Goast : MonoBehaviour
         Frighted
     }
 
+    public GoastMode PastgoastMode;
     public GoastMode goastMode;
 
     public enum GoastType{
@@ -57,11 +59,12 @@ public class Goast : MonoBehaviour
     public bool IsPlay=false;
 
     public GameObject[] EyeObjects;
+    public GameObject Frighted;
+
     
     
     public void Start()
     {
-
         Node node = GetNodeAtPosition(transform.position);
         if(node != null)
         {
@@ -118,33 +121,38 @@ public class Goast : MonoBehaviour
 
     public void SetOrientation()
     {
-        int index = 0;
-        if(Direction == Vector3.left)
+        if(goastMode != GoastMode.Frighted)
         {
-            index = 0;
-        }
-        if(Direction == Vector3.right)
-        {
-            index = 1;
-        }
-        if(Direction == Vector3.up)
-        {
-            index = 2;
-        }
-        if(Direction == Vector3.down)
-        {
-            index = 3;
-        }
 
-        for(int i = 0;i < EyeObjects.Length;i++)
-        {
-            if(index == i)
+            int index = 0;
+            if(Direction == Vector3.left)
             {
-                EyeObjects[i].SetActive(true);
+                index = 0;
             }
-            else
+            if(Direction == Vector3.right)
             {
-                EyeObjects[i].SetActive(false);
+                index = 1;
+            }
+            if(Direction == Vector3.up)
+            {
+                index = 2;
+            }
+            if(Direction == Vector3.down)
+            {
+                index = 3;
+            }
+
+            for(int i = 0;i < EyeObjects.Length;i++)
+            {
+                if(index == i)
+                {
+                    EyeObjects[i].SetActive(true);
+                }
+                else
+                {
+                    EyeObjects[i].SetActive(false);
+                }
+
             }
         }
     }
@@ -161,13 +169,16 @@ public class Goast : MonoBehaviour
 
     Node GetNodeAtPosition(Vector2 pos)
     {
-        GameObject tile = gameBoard.Board[(int)Mathf.Round(pos.x), (int)Mathf.Round(pos.y)];
-
-        if(tile != null)
+        GameObject tile;
+        if(gameBoard.Board[(int)Mathf.Round(pos.x), (int)Mathf.Round(pos.y)] != null)
         {
-            return tile.GetComponent<Node>();
+            tile = gameBoard.Board[(int)Mathf.Round(pos.x), (int)Mathf.Round(pos.y)];
+            if(tile != null)
+            {
+                return tile.GetComponent<Node>();
+            }
         }
-        return null;
+        return CurrentNode;
     }
 
     void Setdirection()
@@ -186,16 +197,21 @@ public class Goast : MonoBehaviour
             }
             else
             {
-                MoveToNode = CanMove(PacMan);
+                MoveToNode = SetNextNode(PacMan);
+                Direction = NextDirection;
+                CanMove(Direction);
             }
-
-            Direction = NextDirection ;
+            
         }
         
     }
 
     void ChangePosition()
     {
+        if(CurrentNode == null)
+        {
+            Direction = Vector3.zero;
+        }
         if(MoveToNode == null )
         {
 
@@ -227,7 +243,7 @@ public class Goast : MonoBehaviour
             }
             else
             {
-                MoveToNode = CanMove(PacMan);
+                MoveToNode = SetNextNode(PacMan);
             }
 
             PreviousNode = CurrentNode;
@@ -236,31 +252,61 @@ public class Goast : MonoBehaviour
 
     void ChangeMode()
     {
-        if(goastType == GoastType.Blinky)
+        if(goastMode == GoastMode.Scatter)
         {
-            
-            if(goastMode == GoastMode.Scatter)
-            {
-                
-            }
-            else if(goastMode == GoastMode.Chase)
-            {
-               
-            }
-            else
-            {
+            speed = 3.5f;
+            if(!this.GetComponent<Animator>().enabled)
+                this.GetComponent<Animator>().enabled = true;
+            if(!this.GetComponent<SpriteRenderer>().enabled)
+                this.GetComponent<SpriteRenderer>().enabled = true;
+            if(Frighted.activeSelf)
+                Frighted.SetActive(false);
+            if(PastgoastMode != goastMode)
+                PastgoastMode = goastMode;
 
-            }
         }
+        else if(goastMode == GoastMode.Chase)
+        {
+            speed = 3.5f;
+            if(!this.GetComponent<Animator>().enabled)
+                this.GetComponent<Animator>().enabled =false;
+            if(!this.GetComponent<SpriteRenderer>().enabled)
+                this.GetComponent<SpriteRenderer>().enabled = true;
+            if(Frighted.activeSelf)
+                Frighted.SetActive(false);
+            if(PastgoastMode != goastMode)
+                PastgoastMode = goastMode;
+
+        }
+        else if(goastMode == GoastMode.Frighted)
+        {
+            speed = 2f;
+
+            if(this.GetComponent<Animator>().enabled)
+            {
+                Direction = Direction * -1;
+                CanMove(Direction);
+                this.GetComponent<Animator>().enabled = false;
+            }
+            if(this.GetComponent<SpriteRenderer>().enabled)
+                this.GetComponent<SpriteRenderer>().enabled = false;
+            for(int i = 0;i < EyeObjects.Length;i++)
+            {
+                EyeObjects[i].SetActive(false);
+            }
+            if(!Frighted.activeSelf)
+                Frighted.SetActive(true);
+        }
+       
     }
 
-    Node CanMove(GameObject obj)
+    Node SetNextNode(GameObject obj)
     {
         if(CurrentNode != null)
         {
             nodes = CurrentNode.neighbors;
             Directions = CurrentNode.ValidDirections;
-           /* Distance = 10000f;
+          /* Distance = 10000f;
             for(int i = 0;i < nodes.Length;i++)
             {
                 if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
@@ -273,9 +319,34 @@ public class Goast : MonoBehaviour
             int num = UnityEngine.Random.Range(0, nodes.Length);
             MoveToNode = nodes[num];
             NextDirection = Directions[num];
-
         }
         return MoveToNode;
+    }
+
+    void CanMove(Vector3 dir)
+    {
+        if(CurrentNode != null)
+        {
+            Node movetonode = null;
+            nodes = CurrentNode.neighbors;
+            Directions = CurrentNode.ValidDirections;
+             Distance = 10000f;
+             for(int i = 0;i < nodes.Length;i++)
+             {
+                if((Vector3)Directions[i] == dir)
+                {
+                    movetonode = nodes[i];
+                    NextDirection = Directions[i];
+                }
+             }
+            if(movetonode == null)
+            {
+                movetonode = nodes[0];
+                NextDirection = Directions[0];
+            }
+
+            MoveToNode = movetonode;
+        }
     }
 
 
@@ -293,33 +364,4 @@ public class Goast : MonoBehaviour
         return vec.sqrMagnitude;
     }
 
-
-    /*Vector3 GetdirectionOfPacMan(Vector3 position)
-    {
-        Vector3 pos = Vector3.zero;
-        Vector3 Direction = this.transform.position - position;
-        if(Direction.x > 0)
-        {
-            pos = Vector3.right;
-        }
-
-        if(Direction.x < 0)
-        {
-            pos = Vector3.left;
-        }
-
-        if(Direction.z > 0)
-        {
-            pos = Vector3.up;
-        }
-
-        if(Direction.z < 0)
-        {
-            pos = Vector3.down;
-        }
-
-        return pos;
-    }*/
 }
-
-
