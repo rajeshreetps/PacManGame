@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Ghost : MonoBehaviour 
+public class Ghost : MonoBehaviour
 {
-
+    public static Ghost ghostInstance;
     float speed = 3.5f;
     float Distance = 100000f;
     int ScatterObjId;
@@ -23,17 +23,20 @@ public class Ghost : MonoBehaviour
     public List<Node> scatterPoints;
 
 
-    public enum GoastMode
+    public enum GhostMode
     {
         Chase,
         Scatter,
-        Frighted
+        Frighted,
+        Die,
+        Over
     }
 
-    public GoastMode PastgoastMode;
-    public GoastMode goastMode;
+    public GhostMode PastGhostMode;
+    public GhostMode ghostMode;
 
-    public enum GoastType{
+    public enum GoastType
+    {
         Blinky,
         Inky,
         Pinky,
@@ -42,28 +45,40 @@ public class Ghost : MonoBehaviour
     //[HideInInspector]
     public GoastType goastType;
 
+    public GameObject GhostDiePoint;
+    public Node GhostDieNode;
+    public GameObject StartObject;
+
     [HideInInspector]
     public GameObject PacMan;
     //[HideInInspector]
     public GameBoard gameBoard;
 
-    public Node CurrentNode, PreviousNode,MoveToNode;
+    public static Node SCurrentNode, SPreviousNode, SMoveToNode;
+    public Node CurrentNode, PreviousNode, MoveToNode;
     public Vector3 Direction = Vector3.zero;
 
-    public Vector3 NextDirection =Vector3.zero;
+    public Vector3 NextDirection = Vector3.zero;
 
     public Vector3 PacDirection;
     public Node[] nodes;
     public Vector2[] Directions;
 
-    public bool IsPlay=false;
+    public bool IsPlay = false;
 
     public GameObject[] EyeObjects;
     public GameObject Frighted;
 
-    
-    
+
+
     public void Start()
+    {
+        if(ghostInstance == null)
+            ghostInstance = this;
+
+    }
+
+    public void OnEnable()
     {
         Node node = GetNodeAtPosition(transform.position);
         if(node != null)
@@ -72,25 +87,64 @@ public class Ghost : MonoBehaviour
             PreviousNode = CurrentNode;
         }
 
-       
+        if(StartObject != null)
+        {
+            this.transform.position = StartObject.transform.position;
+        }
+        if(SCurrentNode == null && CurrentNode != null)
+        {
+            SCurrentNode = CurrentNode;
+        }
+        else{
+            CurrentNode = SCurrentNode;
+        }
+        if(SPreviousNode == null && PreviousNode != null)
+        {
+            SPreviousNode = PreviousNode;
+        }
+        else
+        {
+            CurrentNode = SCurrentNode;
+        }
+        if(SMoveToNode == null && SMoveToNode != null)
+        {
+            SMoveToNode = MoveToNode;
+        }
+        else
+        {
+            CurrentNode = SCurrentNode;
+        }
+        ScatterObjId = 0;
+        Scatter1 = 7;
+        Scatter2 = 7;
+        Scatter3 = 5;
+        Scatter4 = 5;
+
+        Chase1 = 20;
+        Chase2 = 20;
+        Chase3 = 20;
+        Chase4 = 20;
+        ghostMode = GhostMode.Chase;
+        Frighted.SetActive(false);
         CheckingGoastType();
     }
 
     void CheckingGoastType()
     {
+        Debug.Log("CheckingGoastType");
         switch(goastType)
         {
             case GoastType.Blinky:
                 StartCoroutine(GoastMovement(0f, Vector3.left));
                 break;
             case GoastType.Inky:
-                StartCoroutine(GoastMovement(3f, Vector3.right));
+                StartCoroutine(GoastMovement(6f, Vector3.right));
                 break;
-           case GoastType.Pinky:
-                StartCoroutine(GoastMovement(6f, Vector3.up));
+            case GoastType.Pinky:
+                StartCoroutine(GoastMovement(12f, Vector3.up));
                 break;
-           case GoastType.Clyde:
-                StartCoroutine(GoastMovement(9f, Vector3.left));
+            case GoastType.Clyde:
+                StartCoroutine(GoastMovement(18f, Vector3.left));
                 break;
         }
 
@@ -106,22 +160,22 @@ public class Ghost : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            GetcurrentNode();
+        GetcurrentNode();
 
-            ChangePosition();
+        ChangePosition();
 
-            ChangeMode();
+        ChangeMode();
 
-            Setdirection();
+        Setdirection();
 
-            SetOrientation();
+        SetOrientation();
 
         transform.position += Direction * speed * UnityEngine.Time.deltaTime;
     }
 
     public void SetOrientation()
     {
-        if(goastMode != GoastMode.Frighted)
+        if(ghostMode != GhostMode.Frighted)
         {
 
             int index = 0;
@@ -191,9 +245,30 @@ public class Ghost : MonoBehaviour
 
             PreviousNode = CurrentNode;
 
-            if(goastMode == GoastMode.Scatter)
+            if(ghostMode == GhostMode.Scatter)
             {
                 MoveToNode = null;
+            }
+            else if(ghostMode == GhostMode.Die)
+            {
+
+                if(CurrentNode == GhostDieNode)
+                {
+                    Direction = Vector3.zero;
+                    speed = 0;
+                    GhostDieNode.GetComponent<ReSetDieGhost>().RestartGhost(this.gameObject);
+                }
+                else if(CurrentNode.gameObject == GhostDiePoint)
+                {
+                    MoveToNode = GhostDieNode;
+                    Direction = Vector3.down;
+                }
+                else
+                {
+                    MoveToNode = SetNextNode(GhostDiePoint);
+                    Direction = NextDirection;
+                    CanMove(Direction);
+                }
             }
             else
             {
@@ -201,9 +276,9 @@ public class Ghost : MonoBehaviour
                 Direction = NextDirection;
                 CanMove(Direction);
             }
-            
+
         }
-        
+
     }
 
     void ChangePosition()
@@ -212,10 +287,10 @@ public class Ghost : MonoBehaviour
         {
             Direction = Vector3.zero;
         }
-        if(MoveToNode == null )
+        if(MoveToNode == null)
         {
 
-            if(goastMode == GoastMode.Scatter)
+            if(ghostMode == GhostMode.Scatter)
             {
                 //CanMove(scatterPoints[ScatterObjId].gameObject);
 
@@ -241,6 +316,13 @@ public class Ghost : MonoBehaviour
                 }
 
             }
+            else if(ghostMode == GhostMode.Die)
+            {
+
+                MoveToNode = SetNextNode(GhostDiePoint);
+                Direction = NextDirection;
+                CanMove(Direction);
+            }
             else
             {
                 MoveToNode = SetNextNode(PacMan);
@@ -252,7 +334,7 @@ public class Ghost : MonoBehaviour
 
     void ChangeMode()
     {
-        if(goastMode == GoastMode.Scatter)
+        if(ghostMode == GhostMode.Scatter)
         {
             speed = 3.5f;
             if(!this.GetComponent<Animator>().enabled)
@@ -261,31 +343,29 @@ public class Ghost : MonoBehaviour
                 this.GetComponent<SpriteRenderer>().enabled = true;
             if(Frighted.activeSelf)
                 Frighted.SetActive(false);
-            if(PastgoastMode != goastMode)
-                PastgoastMode = goastMode;
+            if(PastGhostMode != ghostMode)
+                PastGhostMode = ghostMode;
 
         }
-        else if(goastMode == GoastMode.Chase)
+        else if(ghostMode == GhostMode.Chase)
         {
             speed = 3.5f;
             if(!this.GetComponent<Animator>().enabled)
-                this.GetComponent<Animator>().enabled =false;
+                this.GetComponent<Animator>().enabled = true;
             if(!this.GetComponent<SpriteRenderer>().enabled)
                 this.GetComponent<SpriteRenderer>().enabled = true;
             if(Frighted.activeSelf)
                 Frighted.SetActive(false);
-            if(PastgoastMode != goastMode)
-                PastgoastMode = goastMode;
+            if(PastGhostMode != ghostMode)
+                PastGhostMode = ghostMode;
 
         }
-        else if(goastMode == GoastMode.Frighted)
+        else if(ghostMode == GhostMode.Frighted)
         {
             speed = 2f;
 
             if(this.GetComponent<Animator>().enabled)
             {
-                Direction = Direction * -1;
-                CanMove(Direction);
                 this.GetComponent<Animator>().enabled = false;
             }
             if(this.GetComponent<SpriteRenderer>().enabled)
@@ -297,7 +377,19 @@ public class Ghost : MonoBehaviour
             if(!Frighted.activeSelf)
                 Frighted.SetActive(true);
         }
-       
+        else if(ghostMode == GhostMode.Die)
+        {
+            speed = 5f;
+            if(Frighted.activeSelf)
+            {
+                Frighted.SetActive(false);
+            }
+        }
+        else
+        {
+            Direction = Vector3.zero;
+        }
+
     }
 
     Node SetNextNode(GameObject obj)
@@ -306,19 +398,25 @@ public class Ghost : MonoBehaviour
         {
             nodes = CurrentNode.neighbors;
             Directions = CurrentNode.ValidDirections;
-          /* Distance = 10000f;
-            for(int i = 0;i < nodes.Length;i++)
+            if(ghostMode == GhostMode.Die)
             {
-                if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
+                Distance = 10000f;
+                for(int i = 0;i < nodes.Length;i++)
                 {
-                    Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
-                    MoveToNode = nodes[i];
-                    NextDirection = Directions[i];
+                    if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
+                    {
+                        Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
+                        MoveToNode = nodes[i];
+                        NextDirection = Directions[i];
+                    }
                 }
-            }*/
-            int num = UnityEngine.Random.Range(0, nodes.Length);
-            MoveToNode = nodes[num];
-            NextDirection = Directions[num];
+            }
+            else
+            {
+                int num = UnityEngine.Random.Range(0, nodes.Length);
+                MoveToNode = nodes[num];
+                NextDirection = Directions[num];
+            }
         }
         return MoveToNode;
     }
@@ -330,15 +428,15 @@ public class Ghost : MonoBehaviour
             Node movetonode = null;
             nodes = CurrentNode.neighbors;
             Directions = CurrentNode.ValidDirections;
-             Distance = 10000f;
-             for(int i = 0;i < nodes.Length;i++)
-             {
+            Distance = 10000f;
+            for(int i = 0;i < nodes.Length;i++)
+            {
                 if((Vector3)Directions[i] == dir)
                 {
                     movetonode = nodes[i];
                     NextDirection = Directions[i];
                 }
-             }
+            }
             if(movetonode == null)
             {
                 movetonode = nodes[0];
@@ -352,9 +450,9 @@ public class Ghost : MonoBehaviour
 
     bool OverShotTarget()
     {
-            float NodeToTarget = LenghfromNode(MoveToNode.transform.position);
-            float NodeToSelf = LenghfromNode(this.transform.position);
-            return NodeToSelf > NodeToTarget;
+        float NodeToTarget = LenghfromNode(MoveToNode.transform.position);
+        float NodeToSelf = LenghfromNode(this.transform.position);
+        return NodeToSelf > NodeToTarget;
 
     }
 

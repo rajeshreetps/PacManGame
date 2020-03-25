@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Playercontoller : MonoBehaviour
 {
-    
+    public static Playercontoller Instance;
 
     float smooth = 5.0f;
     float tiltAngle = 60.0f;
@@ -18,7 +19,7 @@ public class Playercontoller : MonoBehaviour
     public enum Sides
     {Left,Right,Up,Down };
 
-    public bool IsStop = true;
+    public bool IsStop = false,IsOut=false;
     public float speed = 100f;
     Vector3 velo = Vector3.zero;
     Vector3 rotate;
@@ -34,10 +35,11 @@ public class Playercontoller : MonoBehaviour
     void Start()
     {
 
-        //main = this.GetComponent<MeshRenderer>().material.mainTexture;
-        
+        if(Instance == null)
+            Instance = this;
 
-        Node node = GetNodeAtPosition(transform.position);
+
+            Node node = GetNodeAtPosition(transform.position);
         if(node != null)
         {
             CurrentNode = node;
@@ -62,67 +64,70 @@ public class Playercontoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        if(!IsOut)
         {
-            ChangePosition(Vector2.left);
-        }
-        else if(Input.GetKeyDown(KeyCode.RightArrow) )
-        {
-            ChangePosition(Vector2.right);
-
-        }
-        else if(Input.GetKeyDown(KeyCode.UpArrow) )
-        {
-            ChangePosition(Vector2.up);
-        }
-        else if(Input.GetKeyDown(KeyCode.DownArrow) )
-        {
-            ChangePosition(Vector2.down);
-        }
-
-        //SetSprite();
-        if(TargetNode != null && TargetNode != CurrentNode)
-        {
-            if(OverShotTarget())
+            if(Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                CurrentNode = TargetNode;
-                transform.position = CurrentNode.transform.position;
+                ChangePosition(Vector2.left);
+            }
+            else if(Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                ChangePosition(Vector2.right);
 
-                Node MoveToNode = CanMove(Nextpos);
-                if(MoveToNode != null)
-                    pos = Nextpos;
+            }
+            else if(Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                ChangePosition(Vector2.up);
+            }
+            else if(Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                ChangePosition(Vector2.down);
+            }
 
-                if(MoveToNode == null)
-                    MoveToNode = CanMove(pos);
-
-                if(MoveToNode != null)
+            //SetSprite();
+            if(TargetNode != null && TargetNode != CurrentNode)
+            {
+                if(OverShotTarget())
                 {
-                    TargetNode = MoveToNode;
-                    PreviousNode = CurrentNode;
-                    CurrentNode = null;
+                    CurrentNode = TargetNode;
+                    transform.position = CurrentNode.transform.position;
+
+                    Node MoveToNode = CanMove(Nextpos);
+                    if(MoveToNode != null)
+                        pos = Nextpos;
+
+                    if(MoveToNode == null)
+                        MoveToNode = CanMove(pos);
+
+                    if(MoveToNode != null)
+                    {
+                        TargetNode = MoveToNode;
+                        PreviousNode = CurrentNode;
+                        CurrentNode = null;
+                    }
+                    else
+                    {
+                        pos = Vector2.zero;
+                    }
+
                 }
                 else
                 {
-                    pos = Vector2.zero;
-                    IsStop = true;
+                    NextPos();
+                    transform.position += (Vector3)(pos * speed) * Time.deltaTime;
                 }
-
-            }else
-            {
-                NextPos();
-                transform.position += (Vector3)(pos * speed) * Time.deltaTime;
             }
-        }
 
             this.GetComponent<Animator>().SetBool("IsStop", IsStop);
 
 
 
-        // Rotate the cube by converting the angles into a quaternion.
-        Quaternion target = Quaternion.Euler(tiltAroundX, tiltAroundY, tiltAroundZ);
+            // Rotate the cube by converting the angles into a quaternion.
+            Quaternion target = Quaternion.Euler(tiltAroundX, tiltAroundY, tiltAroundZ);
 
             // Dampen towards the target rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, target, speed);
+        }
     }
 
     float LenghfromNode(Vector2 TargetPos)
@@ -225,9 +230,46 @@ public class Playercontoller : MonoBehaviour
             for(int i = 0;i < Ghosts.Length;i++)
             {
                 Ghost ghost = Ghosts[i].GetComponent<Ghost>();
-                ghost.goastMode = Ghost.GoastMode.Frighted;
+                ghost.ghostMode = Ghost.GhostMode.Frighted;
+            }
+        }
+        if(collision.gameObject.tag == "Ghost")
+        {
+            GameObject ghost = collision.gameObject;
+            if(Ghost.ghostInstance.ghostMode != Ghost.GhostMode.Frighted)
+            {
+                pos = Vector3.zero;
+                for(int i = 0;i < Ghosts.Length;i++)
+                {
+                    Ghost ghost1 = Ghosts[i].GetComponent<Ghost>();
+                    ghost1.ghostMode = Ghost.GhostMode.Over;
+                }
+                IsStop = true;
+                IsOut = true;
+                Invoke("GameOut", 1f);
+            }
+            else
+            {
+                ghost.GetComponent<Ghost>().ghostMode = Ghost.GhostMode.Die;
+                ghost.GetComponent<Ghost>().GetComponent<SpriteRenderer>().enabled = false;
             }
         }
     }
+
+    void GameOut()
+    {
+       
+        for(int i = 0;i < Ghosts.Length;i++)
+        {
+            Ghosts[i].SetActive(false);
+        }
+            this.GetComponent<Animator>().SetBool("IsOver", IsOut);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
 }
  

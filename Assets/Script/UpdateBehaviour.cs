@@ -7,6 +7,6 @@ public class UpdateBehaviour : MonoBehaviour
     public void OnAnimationExit()
 
    {
-        this.GetComponentInParent<Ghost>().goastMode = this.GetComponentInParent<Ghost>().PastgoastMode;
+        this.GetComponentInParent<Ghost>().ghostMode = this.GetComponentInParent<Ghost>().PastGhostMode;
     }
 }
