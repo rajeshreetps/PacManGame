@@ -1,14 +1,9 @@
 fileFormatVersion: 2
-guid: 250019b3cffc6534aaa1700883366fc9
+guid: 285dfe7884d4aa848a2bd29f83e7daf8
 TextureImporter:
   fileIDToRecycleName:
-    21300000: New Project (1)_0
-    21300002: New Project (1)_1
-    21300004: New Project (1)_2
-    21300006: New Project (1)_4
-    21300008: New Project (1)_6
-    21300010: New Project (1)_7
-    21300012: New Project (1)_8
+    21300000: PacMan (2) 1_0
+    21300002: PacMan (2) 1_1
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -98,17 +93,28 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: New Project (1)_0
+      name: PacMan (2) 1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2334
-        width: 1166
-        height: 1166
+        x: 41
+        y: 587
+        width: 1189
+        height: 1226
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -116,19 +122,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78cab75202497a84fab235c23aeaf298
+      spriteID: 72b7e83223b7bc74da71265061187fea
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: New Project (1)_1
+      name: PacMan (2) 1_1
       rect:
         serializedVersion: 2
-        x: 1166
-        y: 2334
-        width: 1166
-        height: 1166
+        x: 1326
+        y: 576
+        width: 1248
+        height: 1248
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,107 +142,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3cbc60f2184ac2b45aab2ced6b67b92e
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: New Project (1)_2
-      rect:
-        serializedVersion: 2
-        x: 2332
-        y: 2334
-        width: 1166
-        height: 1166
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f5894aa8e81860348875b450d763500f
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: New Project (1)_4
-      rect:
-        serializedVersion: 2
-        x: 1166
-        y: 1168
-        width: 1166
-        height: 1166
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bd1ca72ff8820034e84ec41f4d55bb89
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: New Project (1)_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 2
-        width: 1166
-        height: 1166
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf01ec17174029548af3820b1a138f5f
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: New Project (1)_7
-      rect:
-        serializedVersion: 2
-        x: 1166
-        y: 2
-        width: 1166
-        height: 1166
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 02ad904230d6f9047837ff5509661637
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: New Project (1)_8
-      rect:
-        serializedVersion: 2
-        x: 2332
-        y: 2
-        width: 1166
-        height: 1166
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e4204b490d584cf438692b817f27127c
+      spriteID: d4b58b8266623db43a164a378f1fd1a5
       vertices: []
       indices: 
       edges: []
@@ -244,7 +150,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: cfae2064aff3c6e4c935da957b865e51
+    spriteID: 29dcb5268708bfa4ca945cd8a2fe2c1a
     vertices: []
     indices: 
     edges: []
