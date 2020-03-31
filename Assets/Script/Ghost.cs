@@ -44,8 +44,10 @@ public class Ghost : MonoBehaviour
     //[HideInInspector]
     public GoastType goastType;
 
-
-    public GameObject GhostDiePoint;
+    public Node GhostDiePoint;
+    public Node GhostDiePoint1;
+    public Node GhostDiePoint2;
+    public Node GhostDieNode1;
     public Node GhostDieNode;
     public GameObject StartObject;
 
@@ -276,22 +278,32 @@ public class Ghost : MonoBehaviour
 
             if(ghostMode == GhostMode.Die)
             {
-
                 if(CurrentNode == GhostDieNode)
                 {
                     Direction = Vector3.zero;
                     speed = 0;
                     GhostDieNode.GetComponent<ReSetDieGhost>().RestartGhost(this.gameObject);
                 }
-                else if(CurrentNode.gameObject == GhostDiePoint)
+                else if(CurrentNode == GhostDieNode1)
                 {
                     MoveToNode = GhostDieNode;
                     Direction = Vector3.down;
                 }
+                else if(CurrentNode == GhostDiePoint)
+                {
+                    Debug.Log("Ghost Point");
+                    MoveToNode = GhostDieNode1;
+                    if(GhostDiePoint == GhostDiePoint1)
+                        Direction = Vector3.left;
+                    else if(GhostDiePoint == GhostDiePoint2)
+                        Direction = Vector3.right;
+
+                }
                 else
                 {
-                    MoveToNode = SetNextNode(GhostDiePoint);
+                    MoveToNode = SetNextNode(GhostDiePoint.gameObject);
                     Direction = NextDirection;
+                    CanMove(Direction, CurrentNode);
                 }
             }
             else
@@ -342,8 +354,13 @@ public class Ghost : MonoBehaviour
             }
             else if(ghostMode == GhostMode.Die)
             {
-
-                MoveToNode = SetNextNode(GhostDiePoint);
+                float Distance1 = Vector3.Distance(CurrentNode.transform.position, GhostDiePoint1.transform.position);
+                float Distance2 = Vector3.Distance(CurrentNode.transform.position, GhostDiePoint2.transform.position);
+                if(Distance1 > Distance2)
+                    GhostDiePoint = GhostDiePoint1;
+                else
+                    GhostDiePoint = GhostDiePoint2;
+                MoveToNode = SetNextNode(GhostDiePoint.gameObject);
             }
             else
             {

@@ -705,7 +705,10 @@ MonoBehaviour:
   PastGhostMode: 0
   ghostMode: 1
   goastType: 2
-  GhostDiePoint: {fileID: 196776254}
+  GhostDiePoint: {fileID: 0}
+  GhostDiePoint1: {fileID: 349528003}
+  GhostDiePoint2: {fileID: 1396674444}
+  GhostDieNode1: {fileID: 196776256}
   GhostDieNode: {fileID: 1661641594}
   StartObject: {fileID: 1661641592}
   PacMan: {fileID: 2114147634}
@@ -7083,6 +7086,7 @@ MonoBehaviour:
   - {fileID: 1939119526}
   - {fileID: 300697475}
   - {fileID: 1423294956}
+  - {fileID: 196776256}
   ValidDirections: []
 --- !u!1 &541742843
 GameObject:
@@ -11060,7 +11064,10 @@ MonoBehaviour:
   PastGhostMode: 0
   ghostMode: 0
   goastType: 0
-  GhostDiePoint: {fileID: 196776254}
+  GhostDiePoint: {fileID: 0}
+  GhostDiePoint1: {fileID: 349528003}
+  GhostDiePoint2: {fileID: 1396674444}
+  GhostDieNode1: {fileID: 196776256}
   GhostDieNode: {fileID: 1661641594}
   StartObject: {fileID: 1955532370}
   PacMan: {fileID: 2114147634}
@@ -21546,7 +21553,10 @@ MonoBehaviour:
   PastGhostMode: 0
   ghostMode: 1
   goastType: 3
-  GhostDiePoint: {fileID: 196776254}
+  GhostDiePoint: {fileID: 0}
+  GhostDiePoint1: {fileID: 349528003}
+  GhostDiePoint2: {fileID: 1396674444}
+  GhostDieNode1: {fileID: 196776256}
   GhostDieNode: {fileID: 1661641594}
   StartObject: {fileID: 470023585}
   PacMan: {fileID: 2114147634}
@@ -21934,7 +21944,10 @@ MonoBehaviour:
   PastGhostMode: 0
   ghostMode: 1
   goastType: 1
-  GhostDiePoint: {fileID: 196776254}
+  GhostDiePoint: {fileID: 0}
+  GhostDiePoint1: {fileID: 349528003}
+  GhostDiePoint2: {fileID: 1396674444}
+  GhostDieNode1: {fileID: 196776256}
   GhostDieNode: {fileID: 1661641594}
   StartObject: {fileID: 1214014591}
   PacMan: {fileID: 2114147634}
