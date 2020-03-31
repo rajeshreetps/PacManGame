@@ -12,14 +12,12 @@ public class GameBoard : MonoBehaviour
     
     public GameObject[,] Board = new GameObject[BoardWidth, BoardHeight];
 
-
     // Start is called before the first frame update
     void Start()
     {
 
         if(Instance == null)
             Instance = this;
-
         GameObject[] objects = FindObjectsOfType<GameObject>();
         foreach(var obj in objects)
         {
@@ -28,20 +26,7 @@ public class GameBoard : MonoBehaviour
             {
                 Board[(int)pos.x, (int)pos.y] = obj;
             }
-            else
-            {
-                
-            }
         }       
 
     }
-
-    private void Update()
-    {
-        
-
-    }
-
-
-
 }

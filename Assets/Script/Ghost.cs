@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Ghost : MonoBehaviour
 {
     public static Ghost ghostInstance;
-    float speed = 3.5f;
+    public float speed = 3.5f;
     float Distance = 100000f;
-    int ScatterObjId;
-    int Scatter1 = 7;
-    int Scatter2 = 7;
-    int Scatter3 = 5;
-    int Scatter4 = 5;
+    public float Scatter1 = 7;
+    public float Scatter2 = 7;
+    public float Scatter3 = 5;
+    public float Scatter4 = 5;
 
-    int Chase1 = 20;
-    int Chase2 = 20;
-    int Chase3 = 20;
-    int Chase4 = 20;
+    public float Chase1 = 20;
+    public float Chase2 = 20;
+    public float Chase3 = 20;
+    public float Chase4 = 20;
 
     public List<Node> scatterPoints;
 
@@ -45,6 +44,7 @@ public class Ghost : MonoBehaviour
     //[HideInInspector]
     public GoastType goastType;
 
+
     public GameObject GhostDiePoint;
     public Node GhostDieNode;
     public GameObject StartObject;
@@ -54,7 +54,7 @@ public class Ghost : MonoBehaviour
     //[HideInInspector]
     public GameBoard gameBoard;
 
-    public static Node SCurrentNode, SPreviousNode, SMoveToNode;
+    public Node SCurrentNode, SPreviousNode, SMoveToNode;
     public Node CurrentNode, PreviousNode, MoveToNode;
     public Vector3 Direction = Vector3.zero;
 
@@ -76,6 +76,22 @@ public class Ghost : MonoBehaviour
         if(ghostInstance == null)
             ghostInstance = this;
 
+
+        if(SCurrentNode == null)
+        {
+            SCurrentNode = CurrentNode;
+        }
+        if(SPreviousNode == null)
+        {
+            SPreviousNode = PreviousNode;
+        }
+        if(SMoveToNode == null)
+        {
+            SMoveToNode = MoveToNode;
+        }
+
+        
+
     }
 
     public void OnEnable()
@@ -86,35 +102,8 @@ public class Ghost : MonoBehaviour
             CurrentNode = node;
             PreviousNode = CurrentNode;
         }
-
-        if(StartObject != null)
-        {
-            this.transform.position = StartObject.transform.position;
-        }
-        if(SCurrentNode == null && CurrentNode != null)
-        {
-            SCurrentNode = CurrentNode;
-        }
-        else{
-            CurrentNode = SCurrentNode;
-        }
-        if(SPreviousNode == null && PreviousNode != null)
-        {
-            SPreviousNode = PreviousNode;
-        }
-        else
-        {
-            CurrentNode = SCurrentNode;
-        }
-        if(SMoveToNode == null && SMoveToNode != null)
-        {
-            SMoveToNode = MoveToNode;
-        }
-        else
-        {
-            CurrentNode = SCurrentNode;
-        }
-        ScatterObjId = 0;
+        
+        
         Scatter1 = 7;
         Scatter2 = 7;
         Scatter3 = 5;
@@ -124,27 +113,64 @@ public class Ghost : MonoBehaviour
         Chase2 = 20;
         Chase3 = 20;
         Chase4 = 20;
-        ghostMode = GhostMode.Chase;
+        Direction = Vector3.zero;
+        speed = 0f;
+
+        this.GetComponent<Animator>().enabled = true;
+        this.GetComponent<SpriteRenderer>().enabled = true;
         Frighted.SetActive(false);
-        CheckingGoastType();
+        GetComponent<Ghost>().GetComponent<CircleCollider2D>().enabled = true;
+        if(ghostMode == GhostMode.Die)
+        {
+            this.transform.position = StartObject.transform.position;
+            CurrentNode = SCurrentNode;
+            PreviousNode = SPreviousNode;
+            MoveToNode = SMoveToNode;
+            CheckingGoastTypeAfterDie();
+        }
+        else
+        {
+            CheckingGoastType();
+        }
+
+        ghostMode = GhostMode.Chase;
+
     }
 
     void CheckingGoastType()
     {
-        Debug.Log("CheckingGoastType");
         switch(goastType)
         {
             case GoastType.Blinky:
                 StartCoroutine(GoastMovement(0f, Vector3.left));
                 break;
             case GoastType.Inky:
-                StartCoroutine(GoastMovement(6f, Vector3.right));
+                StartCoroutine(GoastMovement(3f, Vector3.right));
                 break;
             case GoastType.Pinky:
-                StartCoroutine(GoastMovement(12f, Vector3.up));
+                StartCoroutine(GoastMovement(6f, Vector3.up));
                 break;
             case GoastType.Clyde:
-                StartCoroutine(GoastMovement(18f, Vector3.left));
+                StartCoroutine(GoastMovement(9f, Vector3.left));
+                break;
+        }
+
+    }
+    void CheckingGoastTypeAfterDie()
+    {
+        switch(goastType)
+        {
+            case GoastType.Blinky:
+                StartCoroutine(GoastMovement(0f, Vector3.left));
+                break;
+            case GoastType.Inky:
+                StartCoroutine(GoastMovement(3f, Vector3.right));
+                break;
+            case GoastType.Pinky:
+                StartCoroutine(GoastMovement(6f, Vector3.up));
+                break;
+            case GoastType.Clyde:
+                StartCoroutine(GoastMovement(9f, Vector3.left));
                 break;
         }
 
@@ -154,30 +180,33 @@ public class Ghost : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(DelayTime);
         Direction = dir;
+        speed = 3.5f;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetcurrentNode();
+        if(Direction != Vector3.zero)
+        {
+            GetcurrentNode();
 
-        ChangePosition();
+            ChangePosition();
 
-        ChangeMode();
+            ChangeMode();
 
-        Setdirection();
+            Setdirection();
 
-        SetOrientation();
+            SetOrientation();
 
-        transform.position += Direction * speed * UnityEngine.Time.deltaTime;
+            transform.position += Direction * speed * UnityEngine.Time.deltaTime;
+        }
     }
 
     public void SetOrientation()
     {
         if(ghostMode != GhostMode.Frighted)
         {
-
             int index = 0;
             if(Direction == Vector3.left)
             {
@@ -245,11 +274,7 @@ public class Ghost : MonoBehaviour
 
             PreviousNode = CurrentNode;
 
-            if(ghostMode == GhostMode.Scatter)
-            {
-                MoveToNode = null;
-            }
-            else if(ghostMode == GhostMode.Die)
+            if(ghostMode == GhostMode.Die)
             {
 
                 if(CurrentNode == GhostDieNode)
@@ -267,19 +292,20 @@ public class Ghost : MonoBehaviour
                 {
                     MoveToNode = SetNextNode(GhostDiePoint);
                     Direction = NextDirection;
-                    CanMove(Direction);
                 }
             }
             else
             {
-                MoveToNode = SetNextNode(PacMan);
-                Direction = NextDirection;
-                CanMove(Direction);
+                MoveToNode = null;
+                CanMove(Direction,CurrentNode);
             }
+
 
         }
 
     }
+
+
 
     void ChangePosition()
     {
@@ -292,8 +318,7 @@ public class Ghost : MonoBehaviour
 
             if(ghostMode == GhostMode.Scatter)
             {
-                //CanMove(scatterPoints[ScatterObjId].gameObject);
-
+                MoveToNode = SetNextNode(scatterPoints[0].gameObject);
                 if(scatterPoints.Exists(asd => asd == CurrentNode))
                 {
                     int nodeid = scatterPoints.FindIndex(asd => asd == CurrentNode);
@@ -312,7 +337,6 @@ public class Ghost : MonoBehaviour
 
                     int dirid = Array.IndexOf(Scatternode.neighbors, MoveScatternode);
                     NextDirection = Scatternode.ValidDirections[dirid];
-                    Direction = NextDirection;
                 }
 
             }
@@ -320,13 +344,15 @@ public class Ghost : MonoBehaviour
             {
 
                 MoveToNode = SetNextNode(GhostDiePoint);
-                Direction = NextDirection;
-                CanMove(Direction);
             }
             else
             {
                 MoveToNode = SetNextNode(PacMan);
+                
             }
+            Direction = NextDirection;
+
+            CanMove(Direction);
 
             PreviousNode = CurrentNode;
         }
@@ -337,25 +363,111 @@ public class Ghost : MonoBehaviour
         if(ghostMode == GhostMode.Scatter)
         {
             speed = 3.5f;
+            if(goastType == GoastType.Blinky)
+            {
+                Scatter1 -= Time.deltaTime;
+                if(Scatter1 < 0)
+                {                   
+                    Scatter1 = 7;
+                    ghostMode = GhostMode.Chase;
+                }          
+            }
+            if(goastType == GoastType.Pinky)
+            {
+                Scatter2 -= Time.deltaTime;
+                if(Scatter2 < 0)
+                {
+                    Scatter2 = 7;
+                    ghostMode = GhostMode.Chase;
+                }
+            }
+            if(goastType == GoastType.Inky)
+            {
+                Scatter3 -= Time.deltaTime;
+                if(Scatter3 < 0)
+                {
+                    Scatter3 = 5;
+                    ghostMode = GhostMode.Chase;
+                }
+            }
+            if(goastType == GoastType.Clyde)
+            {
+                Scatter4 -= Time.deltaTime;
+                if(Scatter4 < 0)
+                {
+                    Scatter4 =5;
+                    ghostMode = GhostMode.Chase;
+                }
+            }
             if(!this.GetComponent<Animator>().enabled)
                 this.GetComponent<Animator>().enabled = true;
             if(!this.GetComponent<SpriteRenderer>().enabled)
                 this.GetComponent<SpriteRenderer>().enabled = true;
             if(Frighted.activeSelf)
+            {
                 Frighted.SetActive(false);
+                GetComponent<Ghost>().GetComponent<CircleCollider2D>().enabled = true;
+            }
             if(PastGhostMode != ghostMode)
                 PastGhostMode = ghostMode;
 
         }
         else if(ghostMode == GhostMode.Chase)
         {
+            if(goastType == GoastType.Blinky)
+            {
+                Chase1 -= Time.deltaTime;
+                if(Chase1 < 0)
+                {
+                    Chase1 = 20;
+                    MoveToNode = null;
+                    ghostMode = GhostMode.Scatter;
+                   
+                }
+            }
+            if(goastType == GoastType.Pinky)
+            {
+                Chase2 -= Time.deltaTime;
+                if(Chase2 < 0)
+                {
+                    Chase2 = 20;
+                    MoveToNode = null;
+                    ghostMode = GhostMode.Scatter;
+
+                }
+            }
+            if(goastType == GoastType.Inky)
+            {
+                Chase3 -= Time.deltaTime;
+                if(Chase3 < 0)
+                {
+                    Chase3 = 20;
+                    MoveToNode = null;
+                    ghostMode = GhostMode.Scatter;
+
+                }
+            }
+            if(goastType == GoastType.Clyde)
+            {
+                Chase4 -= Time.deltaTime;
+                if(Chase4 < 0)
+                {
+                    Chase4 = 20;
+                    MoveToNode = null;
+                    ghostMode = GhostMode.Scatter;
+
+                }
+            }
             speed = 3.5f;
             if(!this.GetComponent<Animator>().enabled)
                 this.GetComponent<Animator>().enabled = true;
             if(!this.GetComponent<SpriteRenderer>().enabled)
                 this.GetComponent<SpriteRenderer>().enabled = true;
             if(Frighted.activeSelf)
+            {
                 Frighted.SetActive(false);
+                GetComponent<Ghost>().GetComponent<CircleCollider2D>().enabled = true;
+            }
             if(PastGhostMode != ghostMode)
                 PastGhostMode = ghostMode;
 
@@ -379,11 +491,14 @@ public class Ghost : MonoBehaviour
         }
         else if(ghostMode == GhostMode.Die)
         {
-            speed = 5f;
+
             if(Frighted.activeSelf)
             {
+                speed = 0;
                 Frighted.SetActive(false);
+                Invoke("GotoGhostHouse", 0.5f);
             }
+
         }
         else
         {
@@ -392,13 +507,18 @@ public class Ghost : MonoBehaviour
 
     }
 
+    void GotoGhostHouse()
+    {
+        speed = 10f;
+
+    }
     Node SetNextNode(GameObject obj)
     {
         if(CurrentNode != null)
         {
             nodes = CurrentNode.neighbors;
             Directions = CurrentNode.ValidDirections;
-            if(ghostMode == GhostMode.Die)
+            if(ghostMode == GhostMode.Die || ghostMode == GhostMode.Scatter)
             {
                 Distance = 10000f;
                 for(int i = 0;i < nodes.Length;i++)
@@ -413,9 +533,20 @@ public class Ghost : MonoBehaviour
             }
             else
             {
-                int num = UnityEngine.Random.Range(0, nodes.Length);
-                MoveToNode = nodes[num];
-                NextDirection = Directions[num];
+                int index;
+
+                if(nodes.Length == 2)
+                {
+                    index = Array.IndexOf(Directions, Direction);
+                    if(index == -1)
+                        index = Random.Range(0, Directions.Length);
+                }
+                else 
+                    index = Random.Range(0, Directions.Length);
+
+                MoveToNode = nodes[index];
+                NextDirection = Directions[index];
+
             }
         }
         return MoveToNode;
@@ -444,6 +575,32 @@ public class Ghost : MonoBehaviour
             }
 
             MoveToNode = movetonode;
+        }
+    }
+
+    void CanMove(Vector3 dir,Node CurrentNode)
+    {
+        if(CurrentNode != null)
+        {
+            bool IsValid = false;
+            nodes = CurrentNode.neighbors;
+            Directions = CurrentNode.ValidDirections;
+            Distance = 10000f;
+            for(int i = 0;i < nodes.Length;i++)
+            {
+                if((Vector3)Directions[i] == dir)
+                {
+                    IsValid = true;
+                    break;
+                }
+            }
+            if(!IsValid)
+            {
+                MoveToNode = nodes[0];
+                Direction = Directions[0];
+            }
+
+            
         }
     }
 

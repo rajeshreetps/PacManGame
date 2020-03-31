@@ -108,6 +108,7 @@ public class Playercontoller : MonoBehaviour
                     else
                     {
                         pos = Vector2.zero;
+                        IsStop = true;
                     }
 
                 }
@@ -236,22 +237,26 @@ public class Playercontoller : MonoBehaviour
         if(collision.gameObject.tag == "Ghost")
         {
             GameObject ghost = collision.gameObject;
-            if(Ghost.ghostInstance.ghostMode != Ghost.GhostMode.Frighted)
+            Debug.Log(ghost.GetComponent<Ghost>().ghostMode);
+            if(ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Chase || ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Scatter)
             {
+                Debug.Log("Player Die");
                 pos = Vector3.zero;
                 for(int i = 0;i < Ghosts.Length;i++)
                 {
                     Ghost ghost1 = Ghosts[i].GetComponent<Ghost>();
                     ghost1.ghostMode = Ghost.GhostMode.Over;
                 }
-                IsStop = true;
                 IsOut = true;
                 Invoke("GameOut", 1f);
             }
-            else
+            else if(ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Frighted)
             {
+                ghost.GetComponent<Ghost>().MoveToNode = null;
+                ghost.GetComponent<Ghost>().speed = 0f;
                 ghost.GetComponent<Ghost>().ghostMode = Ghost.GhostMode.Die;
                 ghost.GetComponent<Ghost>().GetComponent<SpriteRenderer>().enabled = false;
+                ghost.GetComponent<Ghost>().GetComponent<CircleCollider2D>().enabled = false;
             }
         }
     }
@@ -264,6 +269,7 @@ public class Playercontoller : MonoBehaviour
             Ghosts[i].SetActive(false);
         }
             this.GetComponent<Animator>().SetBool("IsOver", IsOut);
+       
     }
 
     public void RestartGame()
