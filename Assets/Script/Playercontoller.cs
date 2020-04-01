@@ -247,6 +247,7 @@ public class Playercontoller : MonoBehaviour
                     Ghost ghost1 = Ghosts[i].GetComponent<Ghost>();
                     ghost1.ghostMode = Ghost.GhostMode.Over;
                 }
+                IsStop = false;
                 IsOut = true;
                 Invoke("GameOut", 1f);
             }
@@ -268,7 +269,8 @@ public class Playercontoller : MonoBehaviour
         {
             Ghosts[i].SetActive(false);
         }
-            this.GetComponent<Animator>().SetBool("IsOver", IsOut);
+        ;
+        this.GetComponent<Animator>().SetBool("IsOver", IsOut);
        
     }
 
