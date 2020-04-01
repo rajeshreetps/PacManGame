@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 public class Playercontoller : MonoBehaviour
 {
@@ -24,22 +20,39 @@ public class Playercontoller : MonoBehaviour
     Vector3 velo = Vector3.zero;
     Vector3 rotate;
     Vector2 pos,Nextpos ;
+    public Sprite sp;
     public Animator Anim;
 
     public GameBoard gameBoard;
 
+    public GameObject StartObject;
+
     public Node CurrentNode,PreviousNode,TargetNode;
 
-    public GameObject[] Ghosts;
+    GameObject[] Ghosts;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
 
         if(Instance == null)
             Instance = this;
 
 
-            Node node = GetNodeAtPosition(transform.position);
+    }
+
+    private void Start()
+    {
+        SetPlayer();
+    }
+
+    private void OnEnable()
+    {
+        SetPlayer();
+    }
+
+    void SetPlayer()
+    {
+        Node node = GetNodeAtPosition(transform.position);
         if(node != null)
         {
             CurrentNode = node;
@@ -47,6 +60,9 @@ public class Playercontoller : MonoBehaviour
 
         ChangePosition(pos);
         pos = Vector2.zero;
+        Ghosts = Gamecontroller.Instance.Ghosts;
+        PreviousNode = null;
+        TargetNode = null;
     }
 
     Node GetNodeAtPosition(Vector2 pos)
@@ -160,7 +176,8 @@ public class Playercontoller : MonoBehaviour
                 PreviousNode = CurrentNode;
                 CurrentNode = null;
                 MoveToDir(pos);
-                
+                if(IsStop)
+                    IsStop = false;
             }
         }
     }
@@ -276,7 +293,12 @@ public class Playercontoller : MonoBehaviour
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Gamecontroller.Instance.RestartGame();
+    }
+
+    private void OnDisable()
+    {
+        this.transform.position = StartObject.transform.position;
     }
 
 }

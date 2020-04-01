@@ -122,7 +122,7 @@ public class Ghost : MonoBehaviour
         this.GetComponent<SpriteRenderer>().enabled = true;
         Frighted.SetActive(false);
         GetComponent<Ghost>().GetComponent<CircleCollider2D>().enabled = true;
-        if(ghostMode == GhostMode.Die)
+        if(ghostMode == GhostMode.Die || ghostMode == GhostMode.Over)
         {
             this.transform.position = StartObject.transform.position;
             CurrentNode = SCurrentNode;
