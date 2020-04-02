@@ -11,7 +11,9 @@ public class Gamecontroller : MonoBehaviour
     public TextMeshProUGUI txtScore;
     public int score;
     public int LifeCount = 3;
+    public GameBoard gameBoard;
     public GameObject[] LifeObject;
+    public GameObject playerprefeb;
     public GameObject Player;
     public GameObject[] Ghosts;
     //public Camera Camera;
@@ -40,7 +42,7 @@ public class Gamecontroller : MonoBehaviour
             else
                 LifeObject[i].SetActive(false);
         }
-        if(LifeCount == 0)
+        if(LifeCount == -1)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
@@ -49,14 +51,16 @@ public class Gamecontroller : MonoBehaviour
         {
             Ghosts[i].SetActive(true);
         }
-        Player.SetActive(true);
+        if(Player == null)
+            Player = Instantiate(playerprefeb, new Vector3(8f, 0f, 0f),new Quaternion(0f,0f,0f,0f));
     }
 
 
     public void RestartGame()
     {
         //Camera.gameObject.SetActive(false);
-        Player.SetActive(false);
+        Destroy(Player);
+        Player = null;
         for(int i = 0;i < Ghosts.Length;i++)
         {
             Ghosts[i].SetActive(false);

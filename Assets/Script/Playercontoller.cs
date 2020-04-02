@@ -4,28 +4,18 @@ public class Playercontoller : MonoBehaviour
 {
     public static Playercontoller Instance;
 
-    float smooth = 5.0f;
-    float tiltAngle = 60.0f;
-
     float tiltAroundZ;
     float tiltAroundX;
     float tiltAroundY;
 
 
-    public enum Sides
-    {Left,Right,Up,Down };
 
     public bool IsStop = false,IsOut=false;
     public float speed = 100f;
-    Vector3 velo = Vector3.zero;
     Vector3 rotate;
-    Vector2 pos,Nextpos ;
-    public Sprite sp;
-    public Animator Anim;
+    public Vector2 pos,Nextpos ;
 
     public GameBoard gameBoard;
-
-    public GameObject StartObject;
 
     public Node CurrentNode,PreviousNode,TargetNode;
 
@@ -33,15 +23,13 @@ public class Playercontoller : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-
         if(Instance == null)
             Instance = this;
-
-
     }
 
     private void Start()
     {
+        gameBoard = Gamecontroller.Instance.gameBoard;
         SetPlayer();
     }
 
@@ -52,26 +40,35 @@ public class Playercontoller : MonoBehaviour
 
     void SetPlayer()
     {
-        Node node = GetNodeAtPosition(transform.position);
-        if(node != null)
-        {
-            CurrentNode = node;
-        }
-
-        ChangePosition(pos);
-        pos = Vector2.zero;
         Ghosts = Gamecontroller.Instance.Ghosts;
+        CurrentNode = null;
         PreviousNode = null;
         TargetNode = null;
+        IsStop = true;
+        IsOut = false;
+
+        pos = Vector2.zero;
+        Nextpos = Vector2.zero;
+
+        tiltAroundY = 0f;
+        tiltAroundZ = 0f;
+
+        ChangePosition(pos);
+
+        GetcurrentNode();
+
     }
 
     Node GetNodeAtPosition(Vector2 pos)
     {
-        GameObject tile = gameBoard.Board[(int)pos.x, (int)pos.y];
-
-        if(tile != null)
+        GameObject tile;
+        if(gameBoard != null && gameBoard.Board[(int)Mathf.Round(pos.x), (int)Mathf.Round(pos.y)] != null)
         {
-            return tile.GetComponent<Node>();
+            tile = gameBoard.Board[(int)Mathf.Round(pos.x), (int)Mathf.Round(pos.y)];
+            if(tile != null)
+            {
+                return tile.GetComponent<Node>();
+            }
         }
         return null;
 
@@ -135,15 +132,26 @@ public class Playercontoller : MonoBehaviour
                 }
             }
 
-            this.GetComponent<Animator>().SetBool("IsStop", IsStop);
-
-
 
             // Rotate the cube by converting the angles into a quaternion.
             Quaternion target = Quaternion.Euler(tiltAroundX, tiltAroundY, tiltAroundZ);
 
             // Dampen towards the target rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, target, speed);
+        }
+
+        this.GetComponent<Animator>().SetBool("IsStop", IsStop);
+
+        this.GetComponent<Animator>().SetBool("IsOver", IsOut);
+    }
+
+    public void GetcurrentNode()
+    {
+        Node node = GetNodeAtPosition(transform.position);
+
+        if(node != null)
+        {
+            CurrentNode = node;
         }
     }
 
@@ -176,9 +184,8 @@ public class Playercontoller : MonoBehaviour
                 PreviousNode = CurrentNode;
                 CurrentNode = null;
                 MoveToDir(pos);
-                if(IsStop)
-                    IsStop = false;
             }
+            
         }
     }
 
@@ -264,8 +271,7 @@ public class Playercontoller : MonoBehaviour
                     Ghost ghost1 = Ghosts[i].GetComponent<Ghost>();
                     ghost1.ghostMode = Ghost.GhostMode.Over;
                 }
-                IsStop = false;
-                IsOut = true;
+                IsStop = true;
                 Invoke("GameOut", 1f);
             }
             else if(ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Frighted)
@@ -281,14 +287,11 @@ public class Playercontoller : MonoBehaviour
 
     void GameOut()
     {
-       
         for(int i = 0;i < Ghosts.Length;i++)
         {
             Ghosts[i].SetActive(false);
         }
-        ;
-        this.GetComponent<Animator>().SetBool("IsOver", IsOut);
-       
+        IsOut = true;
     }
 
     public void RestartGame()
@@ -296,10 +299,6 @@ public class Playercontoller : MonoBehaviour
         Gamecontroller.Instance.RestartGame();
     }
 
-    private void OnDisable()
-    {
-        this.transform.position = StartObject.transform.position;
-    }
 
 }
  
