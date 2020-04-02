@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour
@@ -11,7 +10,7 @@ public class GameBoard : MonoBehaviour
     public static int BoardWidth =22;
     
     public GameObject[,] Board = new GameObject[BoardWidth, BoardHeight];
-
+    public List<Node> objects;
 
     // Start is called before the first frame update
     void Start()
@@ -19,14 +18,15 @@ public class GameBoard : MonoBehaviour
 
         if(Instance == null)
             Instance = this;
-        GameObject[] objects = FindObjectsOfType<GameObject>();
-        foreach(var obj in objects)
+        Node[] Nodes = FindObjectsOfType<Node>();
+        foreach(var obj in Nodes)
         {
             Vector2 pos = obj.transform.localPosition;
 
-            if(obj.name != "Player")
+            if(obj.tag == "Pettel" || obj.tag == "PowerPettel")
             {
-                Board[(int)pos.x, (int)pos.y] = obj;
+                objects.Add( obj);
+                Board[(int)pos.x, (int)pos.y] = obj.gameObject;
             }
         }       
 

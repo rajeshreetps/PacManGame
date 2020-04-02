@@ -117,7 +117,10 @@ public class Ghost : MonoBehaviour
         Chase4 = 20;
         Direction = Vector3.zero;
         speed = 0f;
+    }
 
+    public void GhostStartMoving()
+    {
         this.GetComponent<Animator>().enabled = true;
         this.GetComponent<SpriteRenderer>().enabled = true;
         Frighted.SetActive(false);
@@ -136,7 +139,6 @@ public class Ghost : MonoBehaviour
         }
 
         ghostMode = GhostMode.Chase;
-
     }
 
     void CheckingGoastType()

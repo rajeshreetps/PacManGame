@@ -9,5 +9,6 @@ public class ReSetDieGhost : MonoBehaviour
     {
         Ghost.SetActive(false);
         Ghost.SetActive(true);
+        Ghost.GetComponent<Ghost>().GhostStartMoving();
     }
 }

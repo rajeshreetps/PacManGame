@@ -77,7 +77,7 @@ public class Playercontoller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!IsOut)
+        if(!IsOut && Gamecontroller.Instance.gameState == Gamecontroller.GameState.Running)
         {
             if(Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -246,17 +246,23 @@ public class Playercontoller : MonoBehaviour
        if(collision.gameObject.tag == "Pettel")
         {
             collision.gameObject.SetActive(false);
-            Gamecontroller.Instance.score += 10;
+            GameBoard.Instance.objects.Remove(collision.gameObject.GetComponent<Node>());
+            Gamecontroller.score += 10;
         }
         if(collision.gameObject.tag == "PowerPettel")
         {
             collision.gameObject.SetActive(false);
-            Gamecontroller.Instance.score += 100;
+            GameBoard.Instance.objects.Remove(collision.gameObject.GetComponent<Node>());
+            Gamecontroller.score += 100;
             for(int i = 0;i < Ghosts.Length;i++)
             {
                 Ghost ghost = Ghosts[i].GetComponent<Ghost>();
                 ghost.ghostMode = Ghost.GhostMode.Frighted;
             }
+        }
+        if(GameBoard.Instance.objects.Count == 0)
+        {
+            RestartGame();
         }
         if(collision.gameObject.tag == "Ghost")
         {
