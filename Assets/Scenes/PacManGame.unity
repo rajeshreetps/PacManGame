@@ -697,11 +697,17 @@ MonoBehaviour:
   Chase4: 20
   scatterPoints:
   - {fileID: 1644935624}
+  - {fileID: 1103625416}
+  - {fileID: 879985205}
+  - {fileID: 638358116}
   - {fileID: 1970821713}
   - {fileID: 1279390012}
   - {fileID: 648701815}
+  - {fileID: 738767024}
   - {fileID: 1651659990}
+  - {fileID: 1282412431}
   - {fileID: 856636059}
+  - {fileID: 1625057512}
   PastGhostMode: 0
   ghostMode: 0
   goastType: 2
@@ -11457,7 +11463,7 @@ MonoBehaviour:
   - {fileID: 458211996}
   - {fileID: 1600885810}
   PastGhostMode: 0
-  ghostMode: 0
+  ghostMode: 1
   goastType: 0
   GhostDiePoint: {fileID: 0}
   GhostDiePoint1: {fileID: 349528003}
@@ -22020,11 +22026,17 @@ MonoBehaviour:
   Chase4: 20
   scatterPoints:
   - {fileID: 630209041}
+  - {fileID: 1068247737}
   - {fileID: 308278753}
+  - {fileID: 1732700584}
   - {fileID: 52596701}
+  - {fileID: 1298116443}
   - {fileID: 1421308449}
   - {fileID: 1133077976}
   - {fileID: 116173856}
+  - {fileID: 863051022}
+  - {fileID: 483092539}
+  - {fileID: 152313922}
   PastGhostMode: 0
   ghostMode: 0
   goastType: 3
@@ -22411,11 +22423,17 @@ MonoBehaviour:
   Chase4: 20
   scatterPoints:
   - {fileID: 1593303003}
-  - {fileID: 17683435}
-  - {fileID: 1596960174}
-  - {fileID: 1357160220}
-  - {fileID: 1203871895}
+  - {fileID: 1996883571}
+  - {fileID: 1742620997}
+  - {fileID: 582048142}
   - {fileID: 1518495121}
+  - {fileID: 1203871895}
+  - {fileID: 1357160220}
+  - {fileID: 2066762855}
+  - {fileID: 1596960174}
+  - {fileID: 2061078411}
+  - {fileID: 17683435}
+  - {fileID: 1357423410}
   PastGhostMode: 0
   ghostMode: 0
   goastType: 1

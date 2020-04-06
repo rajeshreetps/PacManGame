@@ -92,7 +92,7 @@ public class Ghost : MonoBehaviour
             SMoveToNode = MoveToNode;
         }
 
-        
+
 
     }
 
@@ -104,8 +104,8 @@ public class Ghost : MonoBehaviour
             CurrentNode = node;
             PreviousNode = CurrentNode;
         }
-        
-        
+
+
         Scatter1 = 7;
         Scatter2 = 7;
         Scatter3 = 5;
@@ -388,6 +388,78 @@ public class Ghost : MonoBehaviour
                 }
                 else if(goastType == GoastType.Inky || goastType == GoastType.Pinky)
                 {
+                    Playercontoller p = PacMan.GetComponent<Playercontoller>();
+                    Vector2 MyPos = CurrentNode.transform.position;
+                    GameObject NextNode = null;
+                    try
+                    {
+                        if(NextNode == null && p.Nextpos == Vector2.right)
+                        {
+                            MyPos.x += 4;
+                            if(MyPos.x < 0 && MyPos.x < 22)
+                            {
+                                if(Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y] != null)
+                                {
+                                    NextNode = Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y];
+                                }
+                            }
+                        }
+
+                        if(NextNode == null && p.Nextpos == Vector2.left)
+                        {
+
+                            MyPos.x -= 4;
+                            if(MyPos.x < 0 && MyPos.x < 22)
+                            {
+
+
+                                if(Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y] != null)
+                                {
+                                    NextNode = Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y];
+                                }
+
+                            }
+
+                        }
+                        if(NextNode == null && p.Nextpos == Vector2.up)
+                        {
+                            MyPos.y += 4;
+                            if(MyPos.y < 0 && MyPos.y < 16)
+                            {
+                                if(Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y] != null)
+                                {
+                                    NextNode = Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y];
+                                }
+                            }
+                        }
+
+                        if(NextNode == null && p.Nextpos == Vector2.down)
+                        {
+                            MyPos.y -= 4;
+                            if(MyPos.y < 0 && MyPos.y < 16)
+                            {
+                                if(Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y] != null)
+                                {
+                                    NextNode = Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y];
+                                }
+                            }
+                        }
+
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+
+                    if(NextNode == null)
+                    {
+                        SetNextNode(PacMan);
+                    }
+                    else
+                    {
+                        SetNextNode(NextNode);
+                    }
+
 
                 }
                 else
@@ -412,10 +484,10 @@ public class Ghost : MonoBehaviour
             {
                 Scatter1 -= Time.deltaTime;
                 if(Scatter1 < 0)
-                {                   
+                {
                     Scatter1 = 7;
                     ghostMode = GhostMode.Chase;
-                }          
+                }
             }
             if(goastType == GoastType.Pinky)
             {
@@ -440,7 +512,7 @@ public class Ghost : MonoBehaviour
                 Scatter4 -= Time.deltaTime;
                 if(Scatter4 < 0)
                 {
-                    Scatter4 =5;
+                    Scatter4 = 5;
                     ghostMode = GhostMode.Chase;
                 }
             }
@@ -467,7 +539,7 @@ public class Ghost : MonoBehaviour
                     Chase1 = 20;
                     MoveToNode = null;
                     ghostMode = GhostMode.Scatter;
-                   
+
                 }
             }
             if(goastType == GoastType.Pinky)
@@ -561,17 +633,17 @@ public class Ghost : MonoBehaviour
     {
         if(CurrentNode != null)
         {
-                Distance = 10000f;
-                for(int i = 0;i < nodes.Length;i++)
+            Distance = 10000f;
+            for(int i = 0;i < nodes.Length;i++)
+            {
+                if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
                 {
-                    if(Vector3.Distance(nodes[i].transform.position, obj.transform.position) < Distance)
-                    {
-                        Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
-                        MoveToNode = nodes[i];
-                        NextDirection = Directions[i];
-                    }
+                    Distance = Vector3.Distance(nodes[i].transform.position, obj.transform.position);
+                    MoveToNode = nodes[i];
+                    NextDirection = Directions[i];
                 }
             }
+        }
     }
 
     void RandomMoveNode()
@@ -616,7 +688,7 @@ public class Ghost : MonoBehaviour
         }
     }
 
-    void CanMove(Vector3 dir,Node CurrentNode)
+    void CanMove(Vector3 dir, Node CurrentNode)
     {
         if(CurrentNode != null)
         {
@@ -638,7 +710,7 @@ public class Ghost : MonoBehaviour
                 Direction = Directions[0];
             }
 
-            
+
         }
     }
 
