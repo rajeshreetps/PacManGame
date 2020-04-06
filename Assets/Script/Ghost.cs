@@ -138,7 +138,7 @@ public class Ghost : MonoBehaviour
             CheckingGoastType();
         }
 
-        ghostMode = GhostMode.Chase;
+        ghostMode = GhostMode.Scatter;
     }
 
     void CheckingGoastType()
@@ -251,6 +251,8 @@ public class Ghost : MonoBehaviour
         if(node != null)
         {
             CurrentNode = node;
+            nodes = CurrentNode.neighbors;
+            Directions = CurrentNode.ValidDirections;
         }
     }
 
@@ -303,7 +305,7 @@ public class Ghost : MonoBehaviour
                 }
                 else
                 {
-                    MoveToNode = SetNextNode(GhostDiePoint.gameObject);
+                    SetNextNode(GhostDiePoint.gameObject);
                     Direction = NextDirection;
                     CanMove(Direction, CurrentNode);
                 }
@@ -311,7 +313,6 @@ public class Ghost : MonoBehaviour
             else
             {
                 MoveToNode = null;
-                CanMove(Direction,CurrentNode);
             }
 
 
@@ -332,25 +333,36 @@ public class Ghost : MonoBehaviour
 
             if(ghostMode == GhostMode.Scatter)
             {
-                MoveToNode = SetNextNode(scatterPoints[0].gameObject);
+
                 if(scatterPoints.Exists(asd => asd == CurrentNode))
                 {
                     int nodeid = scatterPoints.FindIndex(asd => asd == CurrentNode);
+
                     Node Scatternode = scatterPoints[nodeid];
 
+                    CurrentNode = Scatternode;
+
                     int NextPoint = nodeid + 1;
+
                     if(NextPoint == scatterPoints.Count)
                     {
                         NextPoint = 0;
                     }
 
-                    int Movenodeid = scatterPoints.FindIndex(asd => asd == scatterPoints[NextPoint]);
-                    Node MoveScatternode = scatterPoints[Movenodeid];
+                    Node MoveScatternode = scatterPoints.Find(asd => asd == scatterPoints[NextPoint]);
+
+                    Debug.Log(MoveScatternode.name);
 
                     MoveToNode = MoveScatternode;
 
                     int dirid = Array.IndexOf(Scatternode.neighbors, MoveScatternode);
+
                     NextDirection = Scatternode.ValidDirections[dirid];
+
+                }
+                else
+                {
+                    SetNextNode(scatterPoints[0].gameObject);
                 }
 
             }
@@ -362,15 +374,29 @@ public class Ghost : MonoBehaviour
                     GhostDiePoint = GhostDiePoint1;
                 else
                     GhostDiePoint = GhostDiePoint2;
-                MoveToNode = SetNextNode(GhostDiePoint.gameObject);
+                SetNextNode(GhostDiePoint.gameObject);
+            }
+            else if(ghostMode == GhostMode.Frighted)
+            {
+                RandomMoveNode();
             }
             else
             {
-                MoveToNode = SetNextNode(PacMan);
-                
-            }
-            Direction = NextDirection;
+                if(goastType == GoastType.Blinky)
+                {
+                    SetNextNode(PacMan);
+                }
+                else if(goastType == GoastType.Inky || goastType == GoastType.Pinky)
+                {
 
+                }
+                else
+                {
+                    RandomMoveNode();
+                }
+            }
+
+            Direction = NextDirection;
             CanMove(Direction);
 
             PreviousNode = CurrentNode;
@@ -531,14 +557,10 @@ public class Ghost : MonoBehaviour
         speed = 10f;
 
     }
-    Node SetNextNode(GameObject obj)
+    void SetNextNode(GameObject obj)
     {
         if(CurrentNode != null)
         {
-            nodes = CurrentNode.neighbors;
-            Directions = CurrentNode.ValidDirections;
-            if(ghostMode == GhostMode.Die || ghostMode == GhostMode.Scatter)
-            {
                 Distance = 10000f;
                 for(int i = 0;i < nodes.Length;i++)
                 {
@@ -550,27 +572,24 @@ public class Ghost : MonoBehaviour
                     }
                 }
             }
-            else
-            {
-                int index;
-
-                if(nodes.Length == 2)
-                {
-                    index = Array.IndexOf(Directions, Direction);
-                    if(index == -1)
-                        index = Random.Range(0, Directions.Length);
-                }
-                else 
-                    index = Random.Range(0, Directions.Length);
-
-                MoveToNode = nodes[index];
-                NextDirection = Directions[index];
-
-            }
-        }
-        return MoveToNode;
     }
 
+    void RandomMoveNode()
+    {
+        int index;
+
+        if(nodes.Length == 2)
+        {
+            index = Array.IndexOf(Directions, Direction);
+            if(index == -1)
+                index = Random.Range(0, Directions.Length);
+        }
+        else
+            index = Random.Range(0, Directions.Length);
+
+        MoveToNode = nodes[index];
+        NextDirection = Directions[index];
+    }
     void CanMove(Vector3 dir)
     {
         if(CurrentNode != null)

@@ -102,6 +102,7 @@ public class Gamecontroller : MonoBehaviour
             for(int i = 0;i < Ghosts.Length;i++)
             {
                 Ghosts[i].SetActive(true);
+                Ghosts[i].GetComponent<Ghost>().PacMan = Player;
                 Ghosts[i].GetComponent<Ghost>().GhostStartMoving();
             }
         }
