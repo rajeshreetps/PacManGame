@@ -2,7 +2,7 @@
 
 This is project of pacman game.
 
---------------------------------------------------------------------
+
 Game Technology : Unity<br>
 Code Language : C# <br>
 Editor:  visual studio2017<br>
@@ -31,7 +31,7 @@ Fourth Ghost = 1600 points
 # Lives
 
 In this game Pac-Man have 3 lives.
-If player eating all the dots in the game throuts the lives , player won the game.
+If player eating all the dots in the game throughout the lives , player won the game.
 else player lose the game.
 
 # Ghosts
@@ -61,8 +61,8 @@ Clyde (orange) Ghost.<br>
   <b>Frighted Behaviour</b>
   
   All Ghost start moving on reverse direction and then move random paths.<br>
+  In this mode pac-man eating ghost , get the more points.
 
-
-
+--------------------------------------------------------------------
 
 
