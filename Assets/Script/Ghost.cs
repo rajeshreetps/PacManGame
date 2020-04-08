@@ -78,7 +78,6 @@ public class Ghost : MonoBehaviour
         if(ghostInstance == null)
             ghostInstance = this;
 
-
         if(SCurrentNode == null)
         {
             SCurrentNode = CurrentNode;
@@ -104,7 +103,6 @@ public class Ghost : MonoBehaviour
             CurrentNode = node;
             PreviousNode = CurrentNode;
         }
-
 
         Scatter1 = 7;
         Scatter2 = 7;
@@ -185,7 +183,6 @@ public class Ghost : MonoBehaviour
         yield return new WaitForSecondsRealtime(DelayTime);
         Direction = dir;
         speed = 3.5f;
-
     }
 
     // Update is called once per frame
@@ -295,7 +292,6 @@ public class Ghost : MonoBehaviour
                 }
                 else if(CurrentNode == GhostDiePoint)
                 {
-                    Debug.Log("Ghost Point");
                     MoveToNode = GhostDieNode1;
                     if(GhostDiePoint == GhostDiePoint1)
                         Direction = Vector3.left;
@@ -314,10 +310,7 @@ public class Ghost : MonoBehaviour
             {
                 MoveToNode = null;
             }
-
-
         }
-
     }
 
 
@@ -350,8 +343,6 @@ public class Ghost : MonoBehaviour
                     }
 
                     Node MoveScatternode = scatterPoints.Find(asd => asd == scatterPoints[NextPoint]);
-
-                    Debug.Log(MoveScatternode.name);
 
                     MoveToNode = MoveScatternode;
 
@@ -411,15 +402,11 @@ public class Ghost : MonoBehaviour
                             MyPos.x -= 4;
                             if(MyPos.x < 0 && MyPos.x < 22)
                             {
-
-
                                 if(Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y] != null)
                                 {
                                     NextNode = Gamecontroller.Instance.gameBoard.Board[(int)MyPos.x, (int)MyPos.y];
                                 }
-
                             }
-
                         }
                         if(NextNode == null && p.Nextpos == Vector2.up)
                         {
@@ -621,7 +608,11 @@ public class Ghost : MonoBehaviour
         {
             Direction = Vector3.zero;
         }
+    }
 
+    public  void ResetFrightedMode()
+    {
+        Frighted.GetComponent<Animator>().Play("FrightedAnim", -1, 0f);
     }
 
     void GotoGhostHouse()

@@ -27,6 +27,8 @@ public class Gamecontroller : MonoBehaviour
     [Space]
     public TextMeshProUGUI txtScore;
     [Space]
+    public GameObject PrefebGhostDieScore;
+    [Space]
     public GameBoard gameBoard;
     [Space]
     public GameObject playerprefeb;
@@ -127,6 +129,13 @@ public class Gamecontroller : MonoBehaviour
             gameState = GameState.GameEnd;
         }
         StartCoroutine("GameStart");
+    }
+
+    public void ShowGhostEatingScore(int score,Vector3 pos)
+    {
+        GameObject obj = Instantiate(PrefebGhostDieScore, pos, Quaternion.identity);
+        obj.GetComponent<TextMeshPro>().text = score.ToString();
+        Destroy(obj.gameObject, 1f);
     }
 
     private void Update()

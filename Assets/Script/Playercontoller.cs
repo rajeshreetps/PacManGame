@@ -20,6 +20,7 @@ public class Playercontoller : MonoBehaviour
     public Node CurrentNode,PreviousNode,TargetNode;
 
     GameObject[] Ghosts;
+    int scoreFrigted;
     // Start is called before the first frame update
     void Awake()
     {
@@ -251,6 +252,7 @@ public class Playercontoller : MonoBehaviour
         }
         if(collision.gameObject.tag == "PowerPettel")
         {
+            scoreFrigted = 100;
             collision.gameObject.SetActive(false);
             GameBoard.Instance.objects.Remove(collision.gameObject.GetComponent<Node>());
             Gamecontroller.score += 100;
@@ -258,6 +260,7 @@ public class Playercontoller : MonoBehaviour
             {
                 Ghost ghost = Ghosts[i].GetComponent<Ghost>();
                 ghost.ghostMode = Ghost.GhostMode.Frighted;
+                ghost.ResetFrightedMode();
             }
         }
         if(GameBoard.Instance.objects.Count == 0)
@@ -267,10 +270,8 @@ public class Playercontoller : MonoBehaviour
         if(collision.gameObject.tag == "Ghost")
         {
             GameObject ghost = collision.gameObject;
-            Debug.Log(ghost.GetComponent<Ghost>().ghostMode);
             if(ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Chase || ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Scatter)
             {
-                Debug.Log("Player Die");
                 pos = Vector3.zero;
                 for(int i = 0;i < Ghosts.Length;i++)
                 {
@@ -278,10 +279,14 @@ public class Playercontoller : MonoBehaviour
                     ghost1.ghostMode = Ghost.GhostMode.Over;
                 }
                 IsStop = true;
+                IsOut = true;
                 Invoke("GameOut", 1f);
             }
             else if(ghost.GetComponent<Ghost>().ghostMode == Ghost.GhostMode.Frighted)
             {
+                scoreFrigted += scoreFrigted;
+                Gamecontroller.score += scoreFrigted;
+                Gamecontroller.Instance.ShowGhostEatingScore(scoreFrigted, ghost.transform.position);
                 ghost.GetComponent<Ghost>().MoveToNode = null;
                 ghost.GetComponent<Ghost>().speed = 0f;
                 ghost.GetComponent<Ghost>().ghostMode = Ghost.GhostMode.Die;
@@ -297,7 +302,6 @@ public class Playercontoller : MonoBehaviour
         {
             Ghosts[i].SetActive(false);
         }
-        IsOut = true;
     }
 
     public void RestartGame()

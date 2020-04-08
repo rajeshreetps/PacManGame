@@ -23294,6 +23294,8 @@ MonoBehaviour:
   gameState: 0
   TxtScore: {fileID: 148383860}
   txtScore: {fileID: 0}
+  PrefebGhostDieScore: {fileID: 1047102811933709868, guid: 9fc412fe5e9e38347a5451a85bf7e03b,
+    type: 3}
   gameBoard: {fileID: 1684371243}
   playerprefeb: {fileID: 5036455874839417192, guid: 5dc0c98907d43824290b36f07458fa05,
     type: 3}
